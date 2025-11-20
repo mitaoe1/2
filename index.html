@@ -40,145 +40,166 @@ section .data
 section .text
     global _start
 _start:
-    ; input 1
-    mov rax,1
-    mov rdi,1
-    mov rsi,m1
-    mov rdx,20
-    syscall
-    mov rax,0
-    mov rdi,0
-    mov rsi,n1
-    mov rdx,20
+
+; ---------------- PRINT m1 ----------------
+    mov rax, 1          ; sys_write
+    mov rdi, 1
+    mov rsi, m1
+    mov rdx, 20
     syscall
 
-    ; input 2
-    mov rax,1
-    mov rdi,1
-    mov rsi,m2
-    mov rdx,20
-    syscall
-    mov rax,0
-    mov rdi,0
-    mov rsi,n2
-    mov rdx,20
+; ---------------- READ n1 ----------------
+    mov rax, 0          ; sys_read
+    mov rdi, 0
+    mov rsi, n1
+    mov rdx, 20
     syscall
 
-    ; convert both
-    mov rsi,n1
+; ---------------- PRINT m2 ----------------
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, m2
+    mov rdx, 21
+    syscall
+
+; ---------------- READ n2 ----------------
+    mov rax, 0
+    mov rdi, 0
+    mov rsi, n2
+    mov rdx, 20
+    syscall
+
+; ---------------- CONVERT TO INTEGER ----------------
+    mov rsi, n1
     call atoi
-    mov rbx,rax
+    mov rbx, rax        ; store first number
 
-    mov rsi,n2
-    call atoi
+    mov rsi, n2
+    call atoi           ; rax = second number
 
-    ; -------- ADDITION --------
-    add rax,rbx
-    mov rdi,res
+; ---------------- ADDITION ----------------
+    add rax, rbx        ; rax = n1 + n2
+    mov rdi, res
     call itoa
 
-    mov rax,1
-    mov rdi,1
-    mov rsi,ma
-    mov rdx,12
+    ; Print "Addition = "
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, ma
+    mov rdx, 11
     syscall
 
-    mov rax,1
-    mov rdi,1
-    mov rsi,res
+    ; Print result
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, res
     call strlen
-    mov rdx,rax
-    mov rax,1
-    mov rdi,1
-    mov rsi,res
+    mov rdx, rax
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, res
     syscall
 
     ; newline
-    mov rax,1
-    mov rdi,1
-    mov rsi,nl
-    mov rdx,1
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, nl
+    mov rdx, 1
     syscall
 
-    ; -------- DIVISION --------
-    mov rsi,n1
+; ---------------- DIVISION ----------------
+    mov rsi, n1
     call atoi
-    mov rbx,rax
+    mov rbx, rax        ; dividend
 
-    mov rsi,n2
-    call atoi
+    mov rsi, n2
+    call atoi           ; divisor in rax
 
-    xor rdx,rdx
-    div rax
+    mov rcx, rax        ; divisor
+    mov rax, rbx        ; dividend
+    xor rdx, rdx        ; clear high part
 
-    mov rdi,res
+    div rcx             ; rax = quotient
+
+    mov rdi, res
     call itoa
 
-    mov rax,1
-    mov rdi,1
-    mov rsi,md
-    mov rdx,11
+    ; Print "Division = "
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, md
+    mov rdx, 11
     syscall
 
-    mov rax,1
-    mov rdi,1
-    mov rsi,res
+    ; Print result
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, res
     call strlen
-    mov rdx,rax
-    mov rax,1
-    mov rdi,1
-    mov rsi,res
+    mov rdx, rax
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, res
     syscall
 
-    ; exit
-    mov rax,60
-    xor rdi,rdi
+    ; newline
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, nl
+    mov rdx, 1
     syscall
 
-;---------- atoi ----------
+; ---------------- EXIT ----------------
+    mov rax, 60
+    xor rdi, rdi
+    syscall
+
+; ---------- atoi ----------
 atoi:
-    xor rax,rax
-    xor rcx,rcx
+    xor rax, rax
+    xor rcx, rcx
 .next:
-    movzx rdx,[rsi+rcx]
-    cmp rdx,10
+    movzx rdx, byte [rsi + rcx]
+    cmp dl, 10         ; newline
     je .done
-    sub rdx,'0'
-    imul rax,rax,10
-    add rax,rdx
+    cmp dl, 0
+    je .done
+    sub dl, '0'
+    imul rax, rax, 10
+    add rax, rdx
     inc rcx
     jmp .next
 .done:
     ret
 
-;---------- itoa ----------
+; ---------- itoa ----------
 itoa:
-    mov rcx,10
-    lea rbx,[rdi+19]
-    mov byte[rbx],0
+    mov rcx, 10
+    lea rbx, [rdi + 19]
+    mov byte [rbx], 0
 .convert:
-    xor rdx,rdx
+    xor rdx, rdx
     div rcx
-    add dl,'0'
+    add dl, '0'
     dec rbx
-    mov [rbx],dl
-    test rax,rax
+    mov [rbx], dl
+    test rax, rax
     jnz .convert
-    mov rsi,rbx
+    mov rsi, rbx
 .copy:
-    mov al,[rsi]
-    mov [rdi],al
+    mov al, [rsi]
+    mov [rdi], al
     inc rsi
     inc rdi
-    test al,al
+    test al, al
     jnz .copy
     ret
 
-;---------- strlen ----------
+; ---------- strlen ----------
 strlen:
-    xor rax,rax
+    xor rax, rax
 .lp:
-    cmp byte[rsi+rax],0
+    cmp byte [rsi + rax], 0
     je .done
     inc rax
     jmp .lp
@@ -192,112 +213,175 @@ strlen:
             <div class="code-section" id="code1">
                 <button class="copy-btn" onclick="copyCode(1, event)">Copy</button>
                 <pre>section .bss
-    n1  resb 20
-    n2  resb 20
-    out resb 40
+n1     resb 20
+n2     resb 20
+result resb 40
 
 section .data
-    m1 db "Enter first number: ",0
-    m2 db "Enter second number: ",0
-    mm db "Multiplication = ",0
-    ms db "Subtraction = ",0
-    nl db 10,0
+m1 db "Enter first number: ",0
+m2 db "Enter second number: ",0
+mm db "Multiplication = ",0
+ms db "Subtraction = ",0
+nl db 10,0
 
 section .text
-    global _start
+global _start
+
 _start:
-    ; input 1
-    mov rax,1
-    mov rdi,1
-    mov rsi,m1
-    mov rdx,20
-    syscall
-    mov rax,0
-    mov rdi,0
-    mov rsi,n1
-    mov rdx,20
+    ; Input first number
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, m1
+    mov rdx, 21
     syscall
 
-    ; input 2
-    mov rax,1
-    mov rdi,1
-    mov rsi,m2
-    mov rdx,20
-    syscall
-    mov rax,0
-    mov rdi,0
-    mov rsi,n2
-    mov rdx,20
+    mov rax, 0
+    mov rdi, 0
+    mov rsi, n1
+    mov rdx, 20
     syscall
 
-    ; convert both
-    mov rsi,n1
+    ; Input second number
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, m2
+    mov rdx, 22
+    syscall
+
+    mov rax, 0
+    mov rdi, 0
+    mov rsi, n2
+    mov rdx, 20
+    syscall
+
+    ; Convert both to integers
+    mov rsi, n1
     call atoi
-    mov rbx,rax
-    mov rsi,n2
+    mov rbx, rax
+
+    mov rsi, n2
     call atoi
 
-    ; -------- MULTIPLY --------
-    imul rbx,rax
-    mov rax,rbx
-    mov rdi,out
+    ; Multiplication
+    imul rbx, rax
+    mov rax, rbx
+    mov rdi, result
     call itoa
 
-    mov rax,1
-    mov rdi,1
-    mov rsi,mm
-    mov rdx,16
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, mm
+    mov rdx, 16
     syscall
 
-    mov rax,1
-    mov rdi,1
-    mov rsi,out
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, result
     call strlen
-    mov rdx,rax
-    mov rax,1
-    mov rdi,1
-    mov rsi,out
+    mov rdx, rax
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, result
     syscall
 
-    ; newline
-    mov rax,1
-    mov rdi,1
-    mov rsi,nl
-    mov rdx,1
+    ; Newline
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, nl
+    mov rdx, 1
     syscall
 
-    ; -------- SUBTRACT --------
-    mov rsi,n1
+    ; Subtraction
+    mov rsi, n1
     call atoi
-    mov rbx,rax
-    mov rsi,n2
+    mov rbx, rax
+
+    mov rsi, n2
     call atoi
-    sub rbx,rax
-    mov rax,rbx
-    mov rdi,out
+    sub rbx, rax
+    mov rax, rbx
+    mov rdi, result
     call itoa
 
-    mov rax,1
-    mov rdi,1
-    mov rsi,ms
-    mov rdx,13
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, ms
+    mov rdx, 13
     syscall
 
-    mov rax,1
-    mov rdi,1
-    mov rsi,out
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, result
     call strlen
-    mov rdx,rax
-    mov rax,1
-    mov rdi,1
-    mov rsi,out
+    mov rdx, rax
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, result
     syscall
 
-    mov rax,60
-    xor rdi,rdi
+    ; Newline
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, nl
+    mov rdx, 1
     syscall
 
-; atoi, itoa, strlen same as Q3</pre>
+    ; Exit
+    mov rax, 60
+    xor rdi, rdi
+    syscall
+
+; ---------- atoi ----------
+atoi:
+    xor rax, rax
+    xor rcx, rcx
+.next:
+    movzx rdx, byte [rsi + rcx]
+    cmp dl, 10
+    je .done
+    cmp dl, 0
+    je .done
+    sub dl, '0'
+    imul rax, rax, 10
+    add rax, rdx
+    inc rcx
+    jmp .next
+.done:
+    ret
+
+; ---------- itoa ----------
+itoa:
+    mov rcx, 10
+    lea rbx, [rdi + 39]
+    mov byte [rbx], 0
+.convert:
+    xor rdx, rdx
+    div rcx
+    add dl, '0'
+    dec rbx
+    mov [rbx], dl
+    test rax, rax
+    jnz .convert
+    mov rsi, rbx
+.copy:
+    mov al, [rsi]
+    mov [rdi], al
+    inc rsi
+    inc rdi
+    test al, al
+    jnz .copy
+    ret
+
+; ---------- strlen ----------
+strlen:
+    xor rax, rax
+.lp:
+    cmp byte [rsi + rax], 0
+    je .done
+    inc rax
+    jmp .lp
+.done:
+    ret</pre>
             </div>
         </div>
 
@@ -315,62 +399,119 @@ section .bss
     cnt  resq 1
 
 section .text
-global _start
+    global _start
 
 _start:
-    mov rax,1
-    mov rdi,1
-    mov rsi,msg
-    mov rdx,msg_len
+    ; Print prompt
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, msg
+    mov rdx, msg_len
     syscall
 
-    mov rax,0
-    mov rdi,0
-    mov rsi,hex
-    mov rdx,17
+    ; Read hex input
+    mov rax, 0
+    mov rdi, 0
+    mov rsi, hex
+    mov rdx, 17
     syscall
     dec rax
-    mov [cnt],rax
+    mov byte [rsi + rax], 0     ; null-terminate input
+    mov [cnt], rax              ; store length
 
-    call h2d
+    call h2d                    ; convert hex to decimal → rax
+    mov rdi, decv
+    call itoa                   ; convert rax to string in decv
 
-    mov rdi,decv
-    call itoa
-
-    mov rax,1
-    mov rdi,1
-    mov rsi,decv
+    ; Print result
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, decv
     call strlen
-    mov rdx,rax
-    mov rax,1
-    mov rdi,1
-    mov rsi,decv
+    mov rdx, rax
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, decv
     syscall
 
-    mov rax,60
-    xor rdi,rdi
+    ; Exit
+    mov rax, 60
+    xor rdi, rdi
     syscall
 
-; HEX to decimal
+; ---------------- HEX to DEC ----------------
 h2d:
-    mov rbx,0
-    mov rsi,hex
-lp:
-    shl rbx,4
-    mov dl,[rsi]
-    cmp dl,'9'
-    jbe ok
-    sub dl,7
-ok:
-    sub dl,'0'
-    add rbx,rdx
+    xor rbx, rbx
+    mov rsi, hex
+.loop:
+    shl rbx, 4
+    mov dl, [rsi]
+    cmp dl, 0
+    je .done
+    cmp dl, '0'
+    jb .skip
+    cmp dl, '9'
+    jbe .digit
+    cmp dl, 'A'
+    jb .lower
+    cmp dl, 'F'
+    jbe .upper
+.lower:
+    cmp dl, 'a'
+    jb .skip
+    cmp dl, 'f'
+    ja .skip
+    sub dl, 'a' - 10
+    jmp .add
+.upper:
+    sub dl, 'A' - 10
+    jmp .add
+.digit:
+    sub dl, '0'
+.add:
+    movzx rdx, dl
+    add rbx, rdx
+.skip:
     inc rsi
-    dec qword[cnt]
-    jnz lp
-    mov rax,rbx
+    dec qword [cnt]
+    jnz .loop
+.done:
+    mov rax, rbx
     ret
 
-; itoa, strlen same as Q3</pre>
+; ---------------- itoa ----------------
+itoa:
+    mov rcx, 10
+    lea rbx, [rdi + 31]
+    mov byte [rbx], 0
+.convert:
+    xor rdx, rdx
+    div rcx
+    add dl, '0'
+    dec rbx
+    mov [rbx], dl
+    test rax, rax
+    jnz .convert
+    mov rsi, rbx
+.copy:
+    mov al, [rsi]
+    mov [rdi], al
+    inc rsi
+    inc rdi
+    test al, al
+    jnz .copy
+    ret
+
+; ---------------- strlen ----------------
+strlen:
+    xor rax, rax
+.loop:
+    cmp byte [rsi + rax], 0
+    je .done
+    inc rax
+    jmp .loop
+.done:
+    ret</pre>
             </div>
         </div>
 
@@ -389,57 +530,81 @@ section .bss
     cnt  resq 1
 
 section .text
-global _start
+    global _start
 
 _start:
-    mov rax,1
-    mov rdi,1
-    mov rsi,msg
-    mov rdx,len
+    ; Print prompt
+    mov rax, 1
+    mov rdi, 1
+    mov rsi, msg
+    mov rdx, len
     syscall
 
-    mov rax,0
-    mov rdi,0
-    mov rsi,inp
-    mov rdx,20
+    ; Read input
+    mov rax, 0
+    mov rdi, 0
+    mov rsi, inp
+    mov rdx, 20
     syscall
     dec rax
-    mov [cnt],rax
+    mov byte [rsi + rax], 0     ; null-terminate input
+    mov [cnt], rax              ; store input length
 
+    ; Convert ASCII to integer
+    mov rsi, inp
     call atoi
-    mov [val],rax
+    mov [val], rax
 
-    mov rbx,[val]
+    ; Convert integer to hex and display
+    mov rbx, [val]
     call disphex
 
-    mov rax,60
-    xor rdi,rdi
+    ; Exit
+    mov rax, 60
+    xor rdi, rdi
     syscall
 
-; display hex
-disphex:
-    mov rsi,buff
-    mov rcx,16
-lp:
-    rol rbx,4
-    mov dl,bl
-    and dl,0Fh
-    cmp dl,9
-    jbe ok
-    add dl,7
-ok:
-    add dl,30h
-    mov [rsi],dl
-    inc rsi
-    loop lp
-    mov rax,1
-    mov rdi,1
-    mov rsi,buff
-    mov rdx,16
-    syscall
+; ---------- atoi ----------
+atoi:
+    xor rax, rax
+    xor rcx, rcx
+.next:
+    movzx rdx, byte [rsi + rcx]
+    cmp dl, 10
+    je .done
+    cmp dl, 0
+    je .done
+    sub dl, '0'
+    imul rax, rax, 10
+    add rax, rdx
+    inc rcx
+    jmp .next
+.done:
     ret
 
-; atoi same as Q3</pre>
+; ---------- disphex ----------
+disphex:
+    lea rsi, [buff + 15]     ; start from end
+    mov rcx, 16
+.loop:
+    mov rax, rbx
+    and rax, 0xF             ; extract lowest nibble
+    cmp al, 9
+    jbe .digit
+    add al, 7
+.digit:
+    add al, '0'
+    mov [rsi], al
+    shr rbx, 4               ; shift right to next nibble
+    dec rsi
+    loop .loop
+
+    lea rsi, [buff]          ; point to start of buffer
+    mov rax, 1
+    mov rdi, 1
+    mov rdx, 16
+    syscall
+    ret</pre>
             </div>
         </div>
 
