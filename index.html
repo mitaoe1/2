@@ -652,6 +652,233 @@ int main(){
             </div>
         </div>
 
+                <div class="problem">
+            <div class="problem-header" onclick="toggle(2)">Sorting and searching</div>
+            <div class="code-section" id="code2">
+                <button class="copy-btn" onclick="copyCode(2, event)">Copy</button>
+                <pre>
+                   
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Student {
+    int rollNo;
+    string name;
+    float sgpa;
+    string department;
+};
+
+// ---------- Display ----------
+void display(Student students[], int n) {
+    for (int i = 0; i < n; i++) {
+        cout << "\nRoll No: " << students[i].rollNo;
+        cout << "\nName: " << students[i].name;
+        cout << "\nSGPA: " << students[i].sgpa;
+        cout << "\nDepartment: " << students[i].department;
+        cout << "\n--------------------------";
+    }
+    cout << endl;
+}
+
+// ---------- (a) Bubble Sort by Roll Number ----------
+void sortByRollno(Student students[], int n) {
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (students[j].rollNo > students[j + 1].rollNo) {
+                swap(students[j], students[j + 1]);
+            }
+        }
+    }
+    cout << "\nStudents sorted by Roll Number (Ascending):";
+    display(students, n);
+}
+
+// ---------- (b) Insertion Sort by Name (Alphabetically) ----------
+void sortByName(Student students[], int n) {
+    for (int i = 1; i < n; i++) {
+        Student key = students[i];
+        int j = i - 1;
+        while (j >= 0 && students[j].name > key.name) {
+            students[j + 1] = students[j];
+            j--;
+        }
+        students[j + 1] = key;
+    }
+    cout << "\nStudents sorted Alphabetically by Name:";
+    display(students, n);
+}
+
+// ---------- (c) Quick Sort by SGPA (Descending for Toppers) ----------
+int partition(Student arr[], int low, int high) {
+    float pivot = arr[high].sgpa;
+    int i = low - 1;
+    for (int j = low; j < high; j++) {
+        if (arr[j].sgpa > pivot) { // descending
+            i++;
+            swap(arr[i], arr[j]);
+        }
+    }
+    swap(arr[i + 1], arr[high]);
+    return i + 1;
+}
+
+void quickSort(Student arr[], int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+void displayToppers(Student students[], int n) {
+    cout << "\nTop 10 Toppers (Sorted by SGPA):";
+    quickSort(students, 0, n - 1);
+    int limit = (n < 10) ? n : 10;
+    display(students, limit);
+}
+
+// ---------- (d) Linear Search by SGPA ----------
+void searchBySGPA(Student students[], int n, float keySGPA) {
+    bool found = false;
+    cout << "\nSearching for students with SGPA = " << keySGPA << "...\n";
+    for (int i = 0; i < n; i++) {
+        if (students[i].sgpa == keySGPA) {
+            cout << "\nRoll No: " << students[i].rollNo;
+            cout << "\nName: " << students[i].name;
+            cout << "\nSGPA: " << students[i].sgpa;
+            cout << "\nDepartment: " << students[i].department;
+            cout << "\n--------------------------";
+            found = true;
+        }
+    }
+    if (!found)
+        cout << "\nNo student found with SGPA = " << keySGPA << endl;
+}
+
+// ---------- (e) Binary Search by Name (Iterative) ----------
+int binarySearchByName(Student students[], int n, string keyName) {
+    int low = 0, high = n - 1;
+    while (low <= high) {
+        int mid = (low + high) / 2;
+        if (students[mid].name == keyName)
+            return mid;
+        else if (students[mid].name < keyName)
+            low = mid + 1;
+        else
+            high = mid - 1;
+    }
+    return -1;
+}
+
+void searchByName(Student students[], int n, string keyName) {
+    sortByName(students, n); // ensure list is sorted by name
+    int index = binarySearchByName(students, n, keyName);
+    if (index != -1) {
+        cout << "\nStudent found:\n";
+        cout << "Roll No: " << students[index].rollNo
+             << "\nName: " << students[index].name
+             << "\nSGPA: " << students[index].sgpa
+             << "\nDepartment: " << students[index].department << endl;
+    } else {
+        cout << "\nStudent named '" << keyName << "' not found.\n";
+    }
+}
+
+// ---------- (f) Fibonacci Search by Department ----------
+int fibonacciSearchByDept(Student students[], int n, string keyDept) {
+    int fib2 = 0;
+    int fib1 = 1;
+    int fib = fib2 + fib1;
+
+    while (fib < n)
+    {
+        fib2 = fib1;
+        fib1 = fib;
+        fib = fib2 + fib1;
+    }
+
+    int offset = -1;
+
+    while (fib > 1) {
+        int i = min(offset + fib2, n - 1);
+
+        if (students[i].department < keyDept) {
+            fib = fib1;
+            fib1 = fib2;
+            fib2 = fib - fib1;
+            offset = i;
+        }
+        else if (students[i].department > keyDept) {
+            fib = fib2;
+            fib1 = fib1 - fib2;
+            fib2 = fib - fib1;
+        }
+        else
+            return i;
+    }
+
+    if (fib1 && students[offset + 1].department == keyDept)
+        return offset + 1;
+
+    return -1;
+}
+
+void searchByDepartment(Student students[], int n, string dept) {
+    sortByName(students, n); // sort so Fibonacci search works properly
+    int index = fibonacciSearchByDept(students, n, dept);
+    if (index != -1)
+        cout << "\nYes, student(s) belong to department '" << dept << "'.\n";
+    else
+        cout << "\nNo student found in department '" << dept << "'.\n";
+}
+
+// ---------- MAIN FUNCTION ----------
+int main() {
+    const int n = 15;
+    Student students[n] = {
+        {101, "Atharv Jadhav", 8.9, "Computer"},
+        {105, "Neha Patil", 9.1, "IT"},
+        {103, "Rohan Shinde", 8.5, "Mechanical"},
+        {104, "Sneha Deshmukh", 8.8, "ENTC"},
+        {102, "Omkar Pawar", 9.0, "Computer"},
+        {106, "Priya Kulkarni", 8.7, "Civil"},
+        {107, "Sanket More", 8.6, "IT"},
+        {108, "Kiran Salve", 9.2, "Mechanical"},
+        {109, "Vaishnavi Kale", 8.3, "Computer"},
+        {110, "Aditya Desai", 8.9, "ENTC"},
+        {111, "Komal Chavan", 9.1, "Civil"},
+        {112, "Sahil Ghorpade", 8.4, "Computer"},
+        {113, "Pooja Pawar", 8.8, "IT"},
+        {114, "Rahul Nikam", 8.5, "Mechanical"},
+        {115, "Tanvi Joshi", 9.3, "Computer"}
+    };
+
+    cout << "\n=== Original Student Database ===";
+    display(students, n);
+
+    cout << "\n\n(a) Roll Call List (Bubble Sort by Roll No):";
+    sortByRollno(students, n);
+
+    cout << "\n\n(b) Arrange Alphabetically (Insertion Sort):";
+    sortByName(students, n);
+
+    cout << "\n\n(c) First Ten Toppers (Quick Sort by SGPA):";
+    displayToppers(students, n);
+
+    cout << "\n\n(d) Search Students by SGPA (Linear Search):";
+    searchBySGPA(students, n, 8.9);
+
+    cout << "\n\n(e) Search Student by Name (Binary Search):";
+    searchByName(students, n, "Neha Patil");
+
+    cout << "\n\n(f) Search by Department (Fibonacci Search):";
+    searchByDepartment(students, n, "Computer");
+
+    return 0;
+}
+ 
+                </pre>
         <div class="problem">
             <div class="problem-header" onclick="toggle(3)">doublyLinklist</div>
             <div class="code-section" id="code3">
