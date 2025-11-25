@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>DSA Practicals</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; padding: 20px; }
@@ -20,12 +21,16 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="problem">
-            <div class="problem-header" onclick="toggle(0)">Customer Manegement System</div>
-            <div class="code-section" id="code0">
-                <button class="copy-btn" onclick="copyCode(0, event)">Copy</button>
-                <pre>#include <iostream>
+
+<div class="container">
+
+    <!-- 1 -->
+    <div class="problem">
+        <div class="problem-header" onclick="toggle(0)">Customer Management System</div>
+        <div class="code-section" id="code0">
+            <button class="copy-btn" onclick="copyCode(0, event)">Copy</button>
+            <pre>
+#include <iostream>
 #include<string>
 using namespace std;
 
@@ -160,15 +165,18 @@ int main(){
     }while(choice!=5);
     return 0;
 
-}</pre>
-            </div>
+}
+            </pre>
         </div>
+    </div>
 
-        <div class="problem">
-            <div class="problem-header" onclick="toggle(1)">Sparse all </div>
-            <div class="code-section" id="code1">
-                <button class="copy-btn" onclick="copyCode(1, event)">Copy</button>
-                <pre>#include <iostream>
+    <!-- 2 -->
+    <div class="problem">
+        <div class="problem-header" onclick="toggle(1)">Sparse Matrix All Operations</div>
+        <div class="code-section" id="code1">
+            <button class="copy-btn" onclick="copyCode(1, event)">Copy</button>
+            <pre>
+#include <iostream>
 using namespace std;
 
 // ------------------ PRINT NORMAL MATRIX ------------------
@@ -427,15 +435,18 @@ int main()
     displaySparse(multiplied);
 
     return 0;
-}</pre>
-            </div>
+}
+            </pre>
         </div>
+    </div>
 
-        <div class="problem">
-            <div class="problem-header" onclick="toggle(2)">LinkList Placement manegement system :- </div>
-            <div class="code-section" id="code2">
-                <button class="copy-btn" onclick="copyCode(2, event)">Copy</button>
-                <pre>#include<iostream>
+    <!-- 3 -->
+    <div class="problem">
+        <div class="problem-header" onclick="toggle(2)">Linked List Placement Management</div>
+        <div class="code-section" id="code2">
+            <button class="copy-btn" onclick="copyCode(2, event)">Copy</button>
+            <pre>
+#include<iostream>
 #include<string>
 using namespace std;
 
@@ -648,15 +659,17 @@ int main(){
         }
 
     } while (choice != 7);
-}</pre>
-            </div>
+}
+            </pre>
         </div>
+    </div>
 
-                <div class="problem">
-            <div class="problem-header" onclick="toggle(2)">Sorting and searching</div>
-            <div class="code-section" id="code2">
-                <button class="copy-btn" onclick="copyCode(2, event)">Copy</button>
-                <pre>
+    <!-- 4 -->
+    <div class="problem">
+        <div class="problem-header" onclick="toggle(3)">Sorting & Searching</div>
+        <div class="code-section" id="code3">
+            <button class="copy-btn" onclick="copyCode(3, event)">Copy</button>
+            <pre>
                    
 #include <iostream>
 #include <string>
@@ -878,12 +891,17 @@ int main() {
     return 0;
 }
  
-                </pre>
-        <div class="problem">
-            <div class="problem-header" onclick="toggle(3)">doublyLinklist</div>
-            <div class="code-section" id="code3">
-                <button class="copy-btn" onclick="copyCode(3, event)">Copy</button>
-                <pre>#include<iostream>
+            </pre>
+        </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="problem">
+        <div class="problem-header" onclick="toggle(4)">Doubly Linked List</div>
+        <div class="code-section" id="code4">
+            <button class="copy-btn" onclick="copyCode(4, event)">Copy</button>
+            <pre>
+#include<iostream>
 using namespace std;
 
 class Node{
@@ -998,15 +1016,18 @@ int main(){
     cout<<endl;
     merge(ll1.head,ll2.head);
     
-}</pre>
-            </div>
+}
+            </pre>
         </div>
+    </div>
 
-        <div class="problem">
-            <div class="problem-header" onclick="toggle(4)">infix to postfix</div>
-            <div class="code-section" id="code4">
-                <button class="copy-btn" onclick="copyCode(4, event)">Copy</button>
-                <pre>#include<iostream>
+    <!-- 6 -->
+    <div class="problem">
+        <div class="problem-header" onclick="toggle(5)">Infix to Postfix</div>
+        <div class="code-section" id="code5">
+            <button class="copy-btn" onclick="copyCode(5, event)">Copy</button>
+            <pre>
+#include<iostream>
 #include<stack>
 #include<string>
 using namespace std;
@@ -1070,15 +1091,18 @@ int main(){
 
     cout << "Postfix Expression: " << infixToPostfix(infix);
     return 0;
-}</pre>
-            </div>
+}
+            </pre>
         </div>
+    </div>
 
-        <div class="problem">
-            <div class="problem-header" onclick="toggle(5)">Postfix Evaluation</div>
-            <div class="code-section" id="code5">
-                <button class="copy-btn" onclick="copyCode(5, event)">Copy</button>
-                <pre>#include<iostream>
+    <!-- 7 -->
+    <div class="problem">
+        <div class="problem-header" onclick="toggle(6)">Postfix Evaluation</div>
+        <div class="code-section" id="code6">
+            <button class="copy-btn" onclick="copyCode(6, event)">Copy</button>
+            <pre>
+#include<iostream>
 #include<string>
 #include<cmath>
 #include<stack>
@@ -1127,15 +1151,18 @@ int main(){
     cout<<" Evaluation is : "<<evaluatePostfix(postfix);
     return 0;
 
-}</pre>
-            </div>
+}
+            </pre>
         </div>
+    </div>
 
-        <div class="problem">
-            <div class="problem-header" onclick="toggle(6)">prefix to  infix</div>
-            <div class="code-section" id="code6">
-                <button class="copy-btn" onclick="copyCode(6, event)">Copy</button>
-                <pre>#include<iostream>
+    <!-- 8 -->
+    <div class="problem">
+        <div class="problem-header" onclick="toggle(7)">Prefix to Infix</div>
+        <div class="code-section" id="code7">
+            <button class="copy-btn" onclick="copyCode(7, event)">Copy</button>
+            <pre>
+#include<iostream>
 #include<string>
 #include<stack>
 using namespace std;
@@ -1170,15 +1197,18 @@ int main(){
     cin>>prefix;
 
     cout<<prefixToInfix(prefix);
-}</pre>
-            </div>
+}
+            </pre>
         </div>
+    </div>
 
-        <div class="problem">
-            <div class="problem-header" onclick="toggle(7)">sudoku solver</div>
-            <div class="code-section" id="code7">
-                <button class="copy-btn" onclick="copyCode(7, event)">Copy</button>
-                <pre>#include<iostream>
+    <!-- 9 -->
+    <div class="problem">
+        <div class="problem-header" onclick="toggle(8)">Sudoku Solver</div>
+        <div class="code-section" id="code8">
+            <button class="copy-btn" onclick="copyCode(8, event)">Copy</button>
+            <pre>
+#include<iostream>
 using namespace std;
 
 void printSudoku(int arr[][4]){
@@ -1257,15 +1287,18 @@ int main(){
         cout<<"solution does not exist"<<endl;
     }
 
-}</pre>
-            </div>
+}
+            </pre>
         </div>
+    </div>
 
-        <div class="problem">
-            <div class="problem-header" onclick="toggle(8)">Input restricted deque</div>
-            <div class="code-section" id="code8">
-                <button class="copy-btn" onclick="copyCode(8, event)">Copy</button>
-                <pre>#include<iostream>
+    <!-- 10 -->
+    <div class="problem">
+        <div class="problem-header" onclick="toggle(9)">Input Restricted Deque</div>
+        <div class="code-section" id="code9">
+            <button class="copy-btn" onclick="copyCode(9, event)">Copy</button>
+            <pre>
+#include<iostream>
 using namespace std;
 
 class Deque{
@@ -1359,15 +1392,18 @@ int main(){
     d1.push_back(8);
     d1.print();
 
-}</pre>
-            </div>
+}
+            </pre>
         </div>
+    </div>
 
-        <div class="problem">
-            <div class="problem-header" onclick="toggle(9)">hashing all </div>
-            <div class="code-section" id="code9">
-                <button class="copy-btn" onclick="copyCode(9, event)">Copy</button>
-                <pre>// linear probing hashing
+    <!-- 11 -->
+    <div class="problem">
+        <div class="problem-header" onclick="toggle(10)">Hashing (All Types)</div>
+        <div class="code-section" id="code10">
+            <button class="copy-btn" onclick="copyCode(10, event)">Copy</button>
+            <pre>
+// linear probing hashing
                     #include<iostream>
 using namespace std;
 
@@ -1599,32 +1635,34 @@ int main(){
         cout << "Enter a value to search (or -1 to exit): ";
     }
 }
-    </pre>
-            </div>
+   
+            </pre>
         </div>
-
     </div>
 
-    <script>
-        function toggle(id) {
-            const code = document.getElementById('code' + id);
-            code.classList.toggle('active');
-        }
-        
-        function copyCode(id, event) {
-            event.stopPropagation();
-            const codeSection = document.getElementById('code' + id);
-            const code = codeSection.querySelector('pre').textContent;
-            navigator.clipboard.writeText(code).then(() => {
-                const btn = event.target;
-                btn.textContent = 'Copied!';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.textContent = 'Copy';
-                    btn.classList.remove('copied');
-                }, 2000);
-            });
-        }
-    </script>
+</div>
+
+
+<script>
+    function toggle(id) {
+        const sec = document.getElementById('code' + id);
+        sec.classList.toggle('active');
+    }
+
+    function copyCode(id, event) {
+        event.stopPropagation();
+        const text = document.getElementById('code' + id).querySelector('pre').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = event.target;
+            btn.textContent = "Copied!";
+            btn.classList.add("copied");
+            setTimeout(() => {
+                btn.textContent = "Copy";
+                btn.classList.remove("copied");
+            }, 2000);
+        });
+    }
+</script>
+
 </body>
 </html>
