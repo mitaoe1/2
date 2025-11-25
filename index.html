@@ -22,1448 +22,1357 @@
 <body>
     <div class="container">
         <div class="problem">
-            <div class="problem-header" onclick="toggle(0)">Q3 - 64-bit Addition & Division</div>
+            <div class="problem-header" onclick="toggle(0)">Customer Manegement System</div>
             <div class="code-section" id="code0">
                 <button class="copy-btn" onclick="copyCode(0, event)">Copy</button>
-                <pre>section .bss
-    n1  resb 20
-    n2  resb 20
-    res resb 20
+                <pre>#include <iostream>
+#include<string>
+using namespace std;
 
-section .data
-    m1 db "Enter first number: ",0
-    m2 db "Enter second number: ",0
-    ma db "Addition = ",0
-    md db "Division = ",0
-    nl db 10,0
+class Customer{
+public:
+    int customerId;
+    string name,phone,email;
 
-section .text
-    global _start
-_start:
+    void input(){
+        // cout<<"Enter Customer Id: ";
+        // cin>>customerId;
 
-; ---------------- PRINT m1 ----------------
-    mov rax, 1          ; sys_write
-    mov rdi, 1
-    mov rsi, m1
-    mov rdx, 20
-    syscall
+        cout<<"Enter First name: ";
+        cin>>name;
 
-; ---------------- READ n1 ----------------
-    mov rax, 0          ; sys_read
-    mov rdi, 0
-    mov rsi, n1
-    mov rdx, 20
-    syscall
+        cout<<"Enter phone number: ";
+        cin>>phone;
 
-; ---------------- PRINT m2 ----------------
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, m2
-    mov rdx, 21
-    syscall
+        cout<<"Enter email Id: ";
+        cin>>email;
+    }
 
-; ---------------- READ n2 ----------------
-    mov rax, 0
-    mov rdi, 0
-    mov rsi, n2
-    mov rdx, 20
-    syscall
+    void display(int n){
+        cout<<"Customer Id: "<<n<<endl;
+        cout<<"Name: "<<name<<endl;
+        cout<<"Moblie No: "<<phone<<endl;
+        cout<<"Email id: "<<email<<endl;
+    }
 
-; ---------------- CONVERT TO INTEGER ----------------
-    mov rsi, n1
-    call atoi
-    mov rbx, rax        ; store first number
+};
 
-    mov rsi, n2
-    call atoi           ; rax = second number
+Customer c[100];
+int n = 0;
 
-; ---------------- ADDITION ----------------
-    add rax, rbx        ; rax = n1 + n2
-    mov rdi, res
-    call itoa
+void addCustomer(){ 
+    if(n<100){
+        cout<<"Enter the detail of new Custormer: "<<endl;
+        c[n].input();
+        n++;
+        cout<<"Your Customer Id is: "<<n<<endl;
+        cout<<"Customer added Successfully "<<endl;
+    }else{
+        cout<<"Customer Is fully"<<endl;
+    }
+}
 
-    ; Print "Addition = "
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, ma
-    mov rdx, 11
-    syscall
+void display(){
+    for(int i = 0;i<n;i++){
+        cout<<endl;
+        c[i].display(i+1);
+        cout<<endl;
+    }
+}
 
-    ; Print result
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, res
-    call strlen
-    mov rdx, rax
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, res
-    syscall
+void deleteCustomer(){
+    int Id;
+    cout<<"Enter a Id to delete Customer: ";
+    cin>>Id;
+    if(0<Id<=n){
+        for(int i = Id;i<=n;i++){
+            c[i-1] = c[i];
+            n--;
+        }
+        cout<<"Customer delete Successfully\n";
+    }else{
+        cout<<"Enter a valid Id "<<endl;
+    }
+}
 
-    ; newline
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, nl
-    mov rdx, 1
-    syscall
+void update(){
+    int Id;
+    cout<<"Enter a Id to delete Customer: ";
+    cin>>Id;
 
-; ---------------- DIVISION ----------------
-    mov rsi, n1
-    call atoi
-    mov rbx, rax        ; dividend
+    if(0<Id<=n){
+        int choice;
+        cout<<"What to update:\n 1.Name \n 2.Mobile \n 3.Email\n";
+        cin>>choice;
+        switch (choice){
+        case 1:
+            cout<<"New Name: ";
+            cin>>c[Id-1].name;
+            break;
+        
+        case 2:
+            cout<<"New Mobile: ";
+            cin>>c[Id-1].phone;
+            break;
 
-    mov rsi, n2
-    call atoi           ; divisor in rax
+        case 3:
+            cout<<"New Email: ";
+            cin>>c[Id-1].email;
+            break;
 
-    mov rcx, rax        ; divisor
-    mov rax, rbx        ; dividend
-    xor rdx, rdx        ; clear high part
+        default:cout<<"Enter a valid choice\n";
+            break;
+        }
 
-    div rcx             ; rax = quotient
+    }else{
+        cout<<"Enter a Valid Id"<<endl;
+    }
+}
+int main(){
+    int choice;
+    do{
+        cout<<"\n---Customer Management System---\n";
+        cout<<" 1.Add Customer \n 2.Display\n 3.Delete Customer\n 4.update Customer\n 5.Exit \n";
+        cout<<"Enter The Choice: ";
+        cin>>choice;
 
-    mov rdi, res
-    call itoa
+        switch(choice){
+            case 1: 
+                addCustomer();
+                break;
+            case 2:
+                display();
+                break;
+            case 3:
+                deleteCustomer();
+                break;
+            case 4:
+                update();
+                break;
+            case 5:
+                cout << "Exiting program.\n"; 
+                break;
+            default:
+            cout<<"Enter a Valid Choice\n";
+        }
 
-    ; Print "Division = "
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, md
-    mov rdx, 11
-    syscall
 
-    ; Print result
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, res
-    call strlen
-    mov rdx, rax
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, res
-    syscall
+    }while(choice!=5);
+    return 0;
 
-    ; newline
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, nl
-    mov rdx, 1
-    syscall
-
-; ---------------- EXIT ----------------
-    mov rax, 60
-    xor rdi, rdi
-    syscall
-
-; ---------- atoi ----------
-atoi:
-    xor rax, rax
-    xor rcx, rcx
-.next:
-    movzx rdx, byte [rsi + rcx]
-    cmp dl, 10         ; newline
-    je .done
-    cmp dl, 0
-    je .done
-    sub dl, '0'
-    imul rax, rax, 10
-    add rax, rdx
-    inc rcx
-    jmp .next
-.done:
-    ret
-
-; ---------- itoa ----------
-itoa:
-    mov rcx, 10
-    lea rbx, [rdi + 19]
-    mov byte [rbx], 0
-.convert:
-    xor rdx, rdx
-    div rcx
-    add dl, '0'
-    dec rbx
-    mov [rbx], dl
-    test rax, rax
-    jnz .convert
-    mov rsi, rbx
-.copy:
-    mov al, [rsi]
-    mov [rdi], al
-    inc rsi
-    inc rdi
-    test al, al
-    jnz .copy
-    ret
-
-; ---------- strlen ----------
-strlen:
-    xor rax, rax
-.lp:
-    cmp byte [rsi + rax], 0
-    je .done
-    inc rax
-    jmp .lp
-.done:
-    ret</pre>
+}</pre>
             </div>
         </div>
 
         <div class="problem">
-            <div class="problem-header" onclick="toggle(1)">Q4 - 64-bit Multiplication & Subtraction</div>
+            <div class="problem-header" onclick="toggle(1)">Sparse all </div>
             <div class="code-section" id="code1">
                 <button class="copy-btn" onclick="copyCode(1, event)">Copy</button>
-                <pre>section .bss
-n1     resb 20
-n2     resb 20
-result resb 40
+                <pre>#include <iostream>
+using namespace std;
 
-section .data
-m1 db "Enter first number: ",0
-m2 db "Enter second number: ",0
-mm db "Multiplication = ",0
-ms db "Subtraction = ",0
-nl db 10,0
+// ------------------ PRINT NORMAL MATRIX ------------------
+void printMatrix(int mat[][20], int r, int c)
+{
+    for (int i = 0; i < r; i++)
+    {
+        for (int j = 0; j < c; j++)
+        {
+            cout << mat[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
 
-section .text
-global _start
+// ------------------ CONVERT NORMAL TO SPARSE ------------------
+void convertToSparse(int mat[][20], int r, int c, int sparse[][3])
+{
+    int k = 1;
+    sparse[0][0] = r;
+    sparse[0][1] = c;
 
-_start:
-    ; Input first number
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, m1
-    mov rdx, 21
-    syscall
+    for (int i = 0; i < r; i++)
+    {
+        for (int j = 0; j < c; j++)
+        {
+            if (mat[i][j] != 0)
+            {
+                sparse[k][0] = i;
+                sparse[k][1] = j;
+                sparse[k][2] = mat[i][j];
+                k++;
+            }
+        }
+    }
+    sparse[0][2] = k - 1;  // total non-zero elements
+}
 
-    mov rax, 0
-    mov rdi, 0
-    mov rsi, n1
-    mov rdx, 20
-    syscall
+// ------------------ DISPLAY SPARSE ------------------
+void displaySparse(int sparse[][3])
+{
+    int total = sparse[0][2];
+    cout << "Row\tCol\tValue\n";
+    for (int i = 0; i <= total; i++)
+    {
+        cout << sparse[i][0] << "\t" 
+             << sparse[i][1] << "\t" 
+             << sparse[i][2] << endl;
+    }
+}
 
-    ; Input second number
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, m2
-    mov rdx, 22
-    syscall
+// ------------------ SIMPLE TRANSPOSE ------------------
+void simpleTranspose(int s[][3], int t[][3])
+{
+    int rows = s[0][0], cols = s[0][1], nonzero = s[0][2];
+    t[0][0] = cols;
+    t[0][1] = rows;
+    t[0][2] = nonzero;
 
-    mov rax, 0
-    mov rdi, 0
-    mov rsi, n2
-    mov rdx, 20
-    syscall
+    int k = 1;
+    for (int col = 0; col < cols; col++)
+    {
+        for (int i = 1; i <= nonzero; i++)
+        {
+            if (s[i][1] == col)
+            {
+                t[k][0] = s[i][1];
+                t[k][1] = s[i][0];
+                t[k][2] = s[i][2];
+                k++;
+            }
+        }
+    }
+}
 
-    ; Convert both to integers
-    mov rsi, n1
-    call atoi
-    mov rbx, rax
+// ------------------ FAST TRANSPOSE ------------------
+void fastTranspose(int s[][3], int t[][3])
+{
+    int rows = s[0][0], cols = s[0][1], nonzero = s[0][2];
 
-    mov rsi, n2
-    call atoi
+    t[0][0] = cols;
+    t[0][1] = rows;
+    t[0][2] = nonzero;
 
-    ; Multiplication
-    imul rbx, rax
-    mov rax, rbx
-    mov rdi, result
-    call itoa
+    int rowterm[20] = {0};
+    int startingPos[20];
 
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, mm
-    mov rdx, 16
-    syscall
+    if (nonzero > 0)
+    {
+        // Count elements in each column
+        for (int i = 1; i <= nonzero; i++)
+            rowterm[s[i][1]]++;
 
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, result
-    call strlen
-    mov rdx, rax
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, result
-    syscall
+        // Starting position for each column
+        startingPos[0] = 1;
+        for (int i = 1; i < cols; i++)
+            startingPos[i] = startingPos[i - 1] + rowterm[i - 1];
 
-    ; Newline
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, nl
-    mov rdx, 1
-    syscall
+        // Construct transpose
+        for (int i = 1; i <= nonzero; i++)
+        {
+            int pos = startingPos[s[i][1]]++;
+            t[pos][0] = s[i][1];
+            t[pos][1] = s[i][0];
+            t[pos][2] = s[i][2];
+        }
+    }
+}
 
-    ; Subtraction
-    mov rsi, n1
-    call atoi
-    mov rbx, rax
+// ------------------ ADD TWO SPARSE MATRICES ------------------
+void addSparse(int a[][3], int b[][3], int c[][3])
+{
+    if (a[0][0] != b[0][0] || a[0][1] != b[0][1])
+    {
+        cout << "Addition not possible.\n";
+        return;
+    }
 
-    mov rsi, n2
-    call atoi
-    sub rbx, rax
-    mov rax, rbx
-    mov rdi, result
-    call itoa
+    int i = 1, j = 1, k = 1;
+    int totalA = a[0][2], totalB = b[0][2];
 
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, ms
-    mov rdx, 13
-    syscall
+    c[0][0] = a[0][0];
+    c[0][1] = a[0][1];
 
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, result
-    call strlen
-    mov rdx, rax
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, result
-    syscall
+    while (i <= totalA && j <= totalB)
+    {
+        // Compare rows
+        if (a[i][0] < b[j][0])
+        {
+            c[k][0] = a[i][0];
+            c[k][1] = a[i][1];
+            c[k][2] = a[i][2];
+            i++; k++;
+        }
+        else if (a[i][0] > b[j][0])
+        {
+            c[k][0] = b[j][0];
+            c[k][1] = b[j][1];
+            c[k][2] = b[j][2];
+            j++; k++;
+        }
+        else
+        {
+            // Same row → compare columns
+            if (a[i][1] < b[j][1])
+            {
+                c[k][0] = a[i][0];
+                c[k][1] = a[i][1];
+                c[k][2] = a[i][2];
+                i++; k++;
+            }
+            else if (a[i][1] > b[j][1])
+            {
+                c[k][0] = b[j][0];
+                c[k][1] = b[j][1];
+                c[k][2] = b[j][2];
+                j++; k++;
+            }
+            else
+            {
+                // Same position
+                int sum = a[i][2] + b[j][2];
+                if (sum != 0)
+                {
+                    c[k][0] = a[i][0];
+                    c[k][1] = a[i][1];
+                    c[k][2] = sum;
+                    k++;
+                }
+                i++; j++;
+            }
+        }
+    }
 
-    ; Newline
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, nl
-    mov rdx, 1
-    syscall
+    // Copy remaining elements
+    while (i <= totalA)
+    {
+        c[k][0] = a[i][0];
+        c[k][1] = a[i][1];
+        c[k][2] = a[i][2];
+        i++; k++;
+    }
 
-    ; Exit
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+    while (j <= totalB)
+    {
+        c[k][0] = b[j][0];
+        c[k][1] = b[j][1];
+        c[k][2] = b[j][2];
+        j++; k++;
+    }
 
-; ---------- atoi ----------
-atoi:
-    xor rax, rax
-    xor rcx, rcx
-.next:
-    movzx rdx, byte [rsi + rcx]
-    cmp dl, 10
-    je .done
-    cmp dl, 0
-    je .done
-    sub dl, '0'
-    imul rax, rax, 10
-    add rax, rdx
-    inc rcx
-    jmp .next
-.done:
-    ret
+    c[0][2] = k - 1;
+}
 
-; ---------- itoa ----------
-itoa:
-    mov rcx, 10
-    lea rbx, [rdi + 39]
-    mov byte [rbx], 0
-.convert:
-    xor rdx, rdx
-    div rcx
-    add dl, '0'
-    dec rbx
-    mov [rbx], dl
-    test rax, rax
-    jnz .convert
-    mov rsi, rbx
-.copy:
-    mov al, [rsi]
-    mov [rdi], al
-    inc rsi
-    inc rdi
-    test al, al
-    jnz .copy
-    ret
+// ------------------ MULTIPLY SPARSE MATRICES ------------------
+void multiplySparse(int a[][3], int b[][3], int c[][3])
+{
+    if (a[0][1] != b[0][0])
+    {
+        cout << "Multiplication not possible.\n";
+        return;
+    }
 
-; ---------- strlen ----------
-strlen:
-    xor rax, rax
-.lp:
-    cmp byte [rsi + rax], 0
-    je .done
-    inc rax
-    jmp .lp
-.done:
-    ret</pre>
+    int rowsA = a[0][0], colsB = b[0][1];
+    int nonA = a[0][2], nonB = b[0][2];
+
+    int res[20][20] = {0};
+
+    // Multiply non-zero terms
+    for (int i = 1; i <= nonA; i++)
+    {
+        for (int j = 1; j <= nonB; j++)
+        {
+            if (a[i][1] == b[j][0])
+            {
+                int r = a[i][0];
+                int ccol = b[j][1];
+                res[r][ccol] += a[i][2] * b[j][2];
+            }
+        }
+    }
+
+    // Convert result to sparse
+    convertToSparse(res, rowsA, colsB, c);
+}
+
+// ------------------ MAIN ------------------
+int main()
+{
+    int mat[3][20] = {{1, 2, 3}, {4, 5, 6}, {7, 0, 9}};
+
+    cout << "Original Matrix:\n";
+    printMatrix(mat, 3, 3);
+
+    int sparse[20][3], simpleT[20][3], fastT[20][3];
+    int added[20][3], multiplied[20][3];
+
+    convertToSparse(mat, 3, 3, sparse);
+    cout << "\nSparse Matrix:\n";
+    displaySparse(sparse);
+
+    simpleTranspose(sparse, simpleT);
+    cout << "\nSimple Transpose:\n";
+    displaySparse(simpleT);
+
+    fastTranspose(sparse, fastT);
+    cout << "\nFast Transpose:\n";
+    displaySparse(fastT);
+
+    addSparse(sparse, simpleT, added);
+    cout << "\nAddition of Sparse Matrices:\n";
+    displaySparse(added);
+
+    multiplySparse(sparse, simpleT, multiplied);
+    cout << "\nMultiplication of Sparse Matrices:\n";
+    displaySparse(multiplied);
+
+    return 0;
+}</pre>
             </div>
         </div>
 
         <div class="problem">
-            <div class="problem-header" onclick="toggle(2)">Q5 - 64-bit HEX to BCD conversion</div>
+            <div class="problem-header" onclick="toggle(2)">LinkList Placement manegement system :- </div>
             <div class="code-section" id="code2">
                 <button class="copy-btn" onclick="copyCode(2, event)">Copy</button>
-                <pre>section .data
-    msg db "Enter 64-bit HEX: ",10
-    msg_len equ $-msg
+                <pre>#include<iostream>
+#include<string>
+using namespace std;
 
-section .bss
-    hex  resb 17
-    decv resb 32
-    cnt  resq 1
+class Node{
+public:
+    int prn;
+    string name;
+    string branch;
+    string company; 
+    Node* next;
 
-section .text
-    global _start
+    Node(int p,string n, string b,string c){
+        prn = p;
+        name = n;
+        branch = b;
+        company = c;
+        next = NULL;
+    }
+};
 
-_start:
-    ; Print prompt
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, msg
-    mov rdx, msg_len
-    syscall
+class Placement{
+public:
+    Node* head;
+    Node* tail;
 
-    ; Read hex input
-    mov rax, 0
-    mov rdi, 0
-    mov rsi, hex
-    mov rdx, 17
-    syscall
-    dec rax
-    mov byte [rsi + rax], 0     ; null-terminate input
-    mov [cnt], rax              ; store length
+    Placement(){
+        head = tail = NULL;
+    }
 
-    call h2d                    ; convert hex to decimal → rax
-    mov rdi, decv
-    call itoa                   ; convert rax to string in decv
+    void insertStudent(){
+        int prn;
+        string name;
+        string branch;
+        string company;
+        cout<<"Enter the prn number: \n";
+        cin>>prn;
 
-    ; Print result
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, decv
-    call strlen
-    mov rdx, rax
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, decv
-    syscall
+        cout<<"Enter the Name: \n";
+        cin>>name;
 
-    ; Exit
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+        cout<<"Enter your branch: \n";
+        cin>>branch;
 
-; ---------------- HEX to DEC ----------------
-h2d:
-    xor rbx, rbx
-    mov rsi, hex
-.loop:
-    shl rbx, 4
-    mov dl, [rsi]
-    cmp dl, 0
-    je .done
-    cmp dl, '0'
-    jb .skip
-    cmp dl, '9'
-    jbe .digit
-    cmp dl, 'A'
-    jb .lower
-    cmp dl, 'F'
-    jbe .upper
-.lower:
-    cmp dl, 'a'
-    jb .skip
-    cmp dl, 'f'
-    ja .skip
-    sub dl, 'a' - 10
-    jmp .add
-.upper:
-    sub dl, 'A' - 10
-    jmp .add
-.digit:
-    sub dl, '0'
-.add:
-    movzx rdx, dl
-    add rbx, rdx
-.skip:
-    inc rsi
-    dec qword [cnt]
-    jnz .loop
-.done:
-    mov rax, rbx
-    ret
+        cout<<"Enter the company name: \n";
+        cin>>company;
 
-; ---------------- itoa ----------------
-itoa:
-    mov rcx, 10
-    lea rbx, [rdi + 31]
-    mov byte [rbx], 0
-.convert:
-    xor rdx, rdx
-    div rcx
-    add dl, '0'
-    dec rbx
-    mov [rbx], dl
-    test rax, rax
-    jnz .convert
-    mov rsi, rbx
-.copy:
-    mov al, [rsi]
-    mov [rdi], al
-    inc rsi
-    inc rdi
-    test al, al
-    jnz .copy
-    ret
+        Node* newNode = new Node(prn,name,branch,company);
+        if(head == NULL){
+            head = tail = newNode;
+        }else{
+            tail->next = newNode;
+            tail = newNode;
+        }
+    cout<<"Student added successfully\n";
+    }
 
-; ---------------- strlen ----------------
-strlen:
-    xor rax, rax
-.loop:
-    cmp byte [rsi + rax], 0
-    je .done
-    inc rax
-    jmp .loop
-.done:
-    ret</pre>
+    void searching(){
+        int p;
+        cout<<"Enter your PRN: ";
+        cin>>p;
+
+        Node*temp = head;
+        while(temp!=NULL){
+            if(p == temp->prn){
+                cout<<"\nName of the Student: "<<temp->name<<endl;
+                cout<<"Branch of the Student is: "<<temp->branch<<endl;
+                cout<<"Company is: "<<temp->company<<endl;
+               return;
+        }
+        temp = temp->next;
+    }
+    cout<<"Not Found\n";
+
+    }
+
+    void deleting(){
+        int p;
+        cout<<"Enter prn: \n";
+        cin>>p;
+
+        if(head == NULL){
+            cout<<"List is empty\n";
+            return;
+        }
+
+        if(head->prn == p){
+            Node* temp = head;
+            head = head->next;
+            temp = NULL;
+            delete temp;
+            cout<<"Student record deleted\n";
+        }else{
+            Node*temp = head;
+            while(temp->next->next!= NULL){
+                if(temp->next->prn == p){
+                    Node* deleteNode = temp->next;
+                    temp->next = temp->next->next;
+                    deleteNode = NULL;
+                    delete deleteNode;
+                    cout<<"Student record deleted\n";
+                    break;
+                }
+                temp = temp->next;
+            }
+        }
+    }
+
+    
+void update(){
+    int p;
+    cout<<"Enter the prn";
+    cin>>p;
+
+    Node* temp = head;
+    while(temp!=NULL){
+        if(temp->prn == p){
+            int choice;
+            string n;
+            string b;
+            string c;
+        cout<<" 1.New name\n 2.New branch\n 3.New company\n";
+        cout<<"Enter the choice: ";
+        cin>>choice;
+            switch (choice){
+            case 1:
+                cout<<"Enter New name:\n";
+                cin>>n;
+                temp->name = n; 
+                break;
+            
+            case 2:
+                cout<<"Enter New branch\n";
+                cin>>b;
+                temp->branch = b;
+                break;
+            case 3:
+                cout<<"Enter New company\n";
+                cin>>c;
+                temp->company = c;
+                break;
+            default:
+            cout<<"Give Valid Input\n";
+                break;
+
+            cout<<"Updated Successfully"<<endl;
+            break;
+            }
+        }
+        temp= temp->next;
+    }
+}
+
+    void display(){
+        Node*temp = head;
+        while(temp!=NULL){
+            cout<<"\nName of the Student: "<<temp->name<<endl;
+            cout<<"PRN of Student: "<<temp->prn<<endl;
+            cout<<"Branch of the Student is: "<<temp->branch<<endl;
+            cout<<"Company is: "<<temp->company<<endl;
+            temp = temp->next;
+        }
+   }
+
+void Sorting(){
+          if (head == NULL || head->next == NULL)
+            return;
+
+        for (Node* i = head; i->next != NULL; i = i->next) {
+            for (Node* j = i->next; j != NULL; j = j->next) {
+                if (i->prn > j->prn) {
+                    swap(i->prn, j->prn);
+                    swap(i->name, j->name);
+                    swap(i->branch, j->branch);
+                    swap(i->company, j->company);
+                }
+            }
+        }
+}
+
+};
+
+
+int main(){
+    Placement obj;
+    int choice;
+
+    do {
+        cout << "\n========= Placement Information System =========\n";
+        cout << "1. Insert Student\n";
+        cout << "2. Update Student\n";
+        cout << "3. Search Student\n";
+        cout << "4. Sort Students (by PRN)\n";
+        cout << "5. Display All Students\n";
+        cout << "6. Delete Student\n";
+        cout << "7. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: obj.insertStudent(); break;
+            case 2: obj.update(); break;
+            case 3: {
+                obj.searching();
+            }
+            case 4: obj.Sorting(); break;
+            case 5: obj.display(); break;
+            case 6: obj.deleting(); break;
+            case 7: cout << "\nExiting...\n"; break;
+            default: cout << "Invalid choice!\n";
+        }
+
+    } while (choice != 7);
+}</pre>
             </div>
         </div>
 
         <div class="problem">
-            <div class="problem-header" onclick="toggle(3)">Q6 - 64-bit BCD to HEX conversion</div>
+            <div class="problem-header" onclick="toggle(3)">doublyLinklist</div>
             <div class="code-section" id="code3">
                 <button class="copy-btn" onclick="copyCode(3, event)">Copy</button>
-                <pre>section .data
-    msg db "Enter BCD number: ",10
-    len equ $-msg
+                <pre>#include<iostream>
+using namespace std;
 
-section .bss
-    inp  resb 20
-    val  resq 1
-    buff resb 16
-    cnt  resq 1
+class Node{
+public:
+    int data;
+    Node* next;
+    Node* prev;
 
-section .text
-    global _start
+    Node(int d){
+        data = d;
+        next = prev = NULL;
+    }
+};
 
-_start:
-    ; Print prompt
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, msg
-    mov rdx, len
-    syscall
+class List{
+public:
+    Node* head;
+    Node* tail;
+    List(){
+        head = tail = NULL;
+    }
 
-    ; Read input
-    mov rax, 0
-    mov rdi, 0
-    mov rsi, inp
-    mov rdx, 20
-    syscall
-    dec rax
-    mov byte [rsi + rax], 0     ; null-terminate input
-    mov [cnt], rax              ; store input length
+    void push_back(int  d){
+        Node* newNode = new Node(d);
+        if(head == NULL){
+            head = tail = newNode;
+        }else{
+            tail->next = newNode;
+            newNode->prev = tail;
+            tail = newNode;
+        }
+    }
 
-    ; Convert ASCII to integer
-    mov rsi, inp
-    call atoi
-    mov [val], rax
+    void printList(){
+        if(head == NULL){
+            cout<<"No Element Exist\n";
+            return;
+        }
+        Node* temp = head;
+        while(temp!=NULL){
+            cout<<temp->data<<" <-> ";
+            temp = temp ->next;
+        }
+        cout<<"NULL";
+    }
 
-    ; Convert integer to hex and display
-    mov rbx, [val]
-    call disphex
+    void sorting(){
+    for(Node* i = head;i != NULL;i = i ->next){
+        for(Node* j = i->next;j != NULL; j = j->next){
+            if(i->data > j->data){
+                swap( j->data, i->data);
+            }
+        }
+    }
+    cout<<"\nSorting Done"<<endl;
+}
+};
 
-    ; Exit
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+void merge(Node* head1,Node* head2){
+    Node* temp1 = head1;
+    Node* temp2 = head2;
+    List ll;
+    while(temp1!=NULL && temp2!=NULL){
+        if(temp1->data < temp2->data){
+            ll.push_back(temp1->data);
+            temp1 = temp1 -> next;
+        }else if(temp1->data == temp2->data){
+            ll.push_back(temp1->data);
+            temp1 = temp1 -> next;
+            temp2 = temp2 -> next;
+        }else{
+             ll.push_back(temp2->data);
+            temp2 = temp2 -> next;
+        }
+    }
+    while(temp1!=NULL){
+         ll.push_back(temp1->data);
+            temp1 = temp1 -> next;
+    }
+    while(temp2!=NULL){
+         ll.push_back(temp2->data);
+            temp2 = temp2 -> next;
+    }
+    cout<<"After merging two code: "<<endl;
+    ll.printList();
+}
 
-; ---------- atoi ----------
-atoi:
-    xor rax, rax
-    xor rcx, rcx
-.next:
-    movzx rdx, byte [rsi + rcx]
-    cmp dl, 10
-    je .done
-    cmp dl, 0
-    je .done
-    sub dl, '0'
-    imul rax, rax, 10
-    add rax, rdx
-    inc rcx
-    jmp .next
-.done:
-    ret
+int main(){
+    List ll1;
+    ll1.push_back(4);
+    ll1.push_back(2);
+    ll1.push_back(6);
+    ll1.push_back(5);
+    ll1.push_back(8);
 
-; ---------- disphex ----------
-disphex:
-    lea rsi, [buff + 15]     ; start from end
-    mov rcx, 16
-.loop:
-    mov rax, rbx
-    and rax, 0xF             ; extract lowest nibble
-    cmp al, 9
-    jbe .digit
-    add al, 7
-.digit:
-    add al, '0'
-    mov [rsi], al
-    shr rbx, 4               ; shift right to next nibble
-    dec rsi
-    loop .loop
+    List ll2;
+    ll2.push_back(9);
+    ll2.push_back(7);
+    ll2.push_back(3);
+    ll2.push_back(4);
+    ll2.push_back(1);
 
-    lea rsi, [buff]          ; point to start of buffer
-    mov rax, 1
-    mov rdi, 1
-    mov rdx, 16
-    syscall
-    ret</pre>
+    ll1.printList();
+    cout<<endl;
+    ll2.printList();
+    
+    ll1.sorting();
+    ll2.sorting();
+    ll1.printList();
+    cout<<endl;
+    ll2.printList();
+    cout<<endl;
+    merge(ll1.head,ll2.head);
+    
+}</pre>
             </div>
         </div>
 
         <div class="problem">
-            <div class="problem-header" onclick="toggle(4)">Q7 - Hex multiplication (Successive Addition)</div>
+            <div class="problem-header" onclick="toggle(4)">infix to postfix</div>
             <div class="code-section" id="code4">
                 <button class="copy-btn" onclick="copyCode(4, event)">Copy</button>
-                <pre>%macro write 2
- mov rax,1
- mov rdi,1
- mov rsi,%1
- mov rdx,%2
- syscall
-%endmacro
+                <pre>#include<iostream>
+#include<stack>
+#include<string>
+using namespace std;
 
-%macro read 2
- mov rax,0
- mov rdi,0
- mov rsi,%1
- mov rdx,%2
- syscall
-%endmacro
+int precedence(char op){
+    if(op == '^') return 3;
+    if(op == '*' || op == '/') return 2;
+    if(op == '+' || op == '-') return 1;
+    return 0;
+}
 
-section .data
- msg1 db "Enter first HEX: ",10
- l1 equ $-msg1
- msg2 db "Enter second HEX: ",10
- l2 equ $-msg2
- msg3 db "Result: ",10
- l3 equ $-msg3
+bool isOperator(char c){
+    return (c=='+' || c=='-' || c=='*' || c=='/' || c=='^');
+}
 
-section .bss
- num  resb 17
- buff resb 16
- cnt  resq 1
- A    resq 1
- B    resq 1
+bool isRightAssociative(char c){
+    return  c == '^';
+}
 
-section .text
-global _start
-_start:
- write msg1,l1
- read num,17
- dec rax
- mov [cnt],rax
- call hexin
- mov [A],rbx
+string infixToPostfix(string infix){
+    stack<char> st;
+    string result = "";
 
- write msg2,l2
- read num,17
- dec rax
- mov [cnt],rax
- call hexin
- mov [B],rbx
+    for(char c: infix){
+        if(isalnum(c)){
+            result += c;
+        }else if(c == '('){
+            st.push(c);
+        }else if(c == ')'){
+            while( !st.empty() && st.top() != '('){
+                result += st.top();
+                st.pop();
+            }
+            st.pop();
+        }else if(isOperator(c)){
+            while(!st.empty() && isOperator(st.top())){
 
- mov rcx,[B]
- mov rbx,0
-lp:
- add rbx,[A]
- loop lp
+                bool cond1 =  precedence(st.top()) > precedence(c);
+                bool cond2 = precedence(st.top()) == precedence(c) &&  !isRightAssociative(c);
 
- write msg3,l3
- call disp
- mov rax,60
- xor rdi,rdi
- syscall
+                if(cond1 || cond2){
+                        result += st.top();
+                        st.pop();
+                }else break;
+            }
+            st.push(c);
+        }
 
-hexin:
- mov rbx,0
- mov rsi,num
-h1:
- shl rbx,4
- mov dl,[rsi]
- cmp dl,'9'
- jbe ok
- sub dl,7
-ok:
- sub dl,'0'
- add rbx,rdx
- inc rsi
- dec qword[cnt]
- jnz h1
- ret
+    }
+    while(!st.empty()){
+        result += st.top();
+        st.pop();
+    }
+    return result;
+}
 
-disp:
- mov rsi,buff
- mov rcx,16
-d1:
- rol rbx,4
- mov dl,bl
- and dl,0Fh
- cmp dl,9
- jbe k
- add dl,7
-k:
- add dl,30h
- mov [rsi],dl
- inc rsi
- loop d1
- write buff,16
- ret</pre>
+int main(){
+    string infix;
+    cout << "Enter infix expression: ";
+    cin >> infix;
+
+    cout << "Postfix Expression: " << infixToPostfix(infix);
+    return 0;
+}</pre>
             </div>
         </div>
 
         <div class="problem">
-            <div class="problem-header" onclick="toggle(5)">Q8 - Hex multiplication (Add & Shift)</div>
+            <div class="problem-header" onclick="toggle(5)">Postfix Evaluation</div>
             <div class="code-section" id="code5">
                 <button class="copy-btn" onclick="copyCode(5, event)">Copy</button>
-                <pre>%macro write 2
- mov rax,1
- mov rdi,1
- mov rsi,%1
- mov rdx,%2
- syscall
-%endmacro
+                <pre>#include<iostream>
+#include<string>
+#include<cmath>
+#include<stack>
+using namespace std;
 
-%macro read 2
- mov rax,0
- mov rdi,0
- mov rsi,%1
- mov rdx,%2
- syscall
-%endmacro
+int applyOp(int a, int b, char op){
+    switch (op){
+    case '+': return a + b;
+        break;
+    case '-': return a - b;
+        break;
+    case '*': return a * b;
+        break;
+    case '/': return a/b;
+        break;
+    case '^': return pow(a,b);
+    }
+    return 0;
+}
 
-section .data
- msg1 db "Enter multiplicand: ",10
- l1 equ $-msg1
- msg2 db "Enter multiplier: ",10
- l2 equ $-msg2
- msg3 db "Product (A then Q):",10
- l3 equ $-msg3
+int evaluatePostfix(string postfix){
+    stack<int>st;
 
-section .bss
- num resb 17
- buff resb 16
- cnt resq 1
- A   resq 1
- B   resq 1
- Q   resq 1
- n   resq 1
+    for(char c: postfix ){
 
-section .text
-global _start
+        if(isdigit(c)){
+            st.push(c - '0');  //convert to int
+        }else{
+            int val1 = st.top();
+            st.pop();
+            int val2 = st.top();
+            st.pop();
 
-_start:
- write msg1,l1
- read num,17
- dec rax
- mov [cnt],rax
- call accept
- mov [B],rbx
+            int result = applyOp(val2,val1,c);
+            st.push(result);
+        }
+    }
+    return st.top();
+}
 
- write msg2,l2
- read num,17
- dec rax
- mov [cnt],rax
- call accept
- mov [Q],rbx
+int main(){
+    string postfix;
+    cout<<"Enter the postfix expression: ";
+    cin>>postfix;
 
- mov qword[A],0
- mov qword[n],64
+    cout<<" Evaluation is : "<<evaluatePostfix(postfix);
+    return 0;
 
-loop1:
- mov rax,[Q]
- and rax,1
- cmp rax,1
- jne sh
-
- mov rax,[A]
- add rax,[B]
- mov [A],rax
-
-sh:
- mov rax,[A]
- mov rbx,[Q]
- shr rbx,1
- and rax,1
- cmp rax,1
- jne sh2
- mov rdx,1
- ror rdx,1
- or rbx,rdx
-
-sh2:
- mov rax,[A]
- shr rax,1
- mov [A],rax
- mov [Q],rbx
-
- dec qword[n]
- jnz loop1
-
- write msg3,l3
- mov rbx,[A]
- call disp
- mov rbx,[Q]
- call disp
-
- mov rax,60
- xor rdi,rdi
- syscall
-
-accept:
- mov rbx,0
- mov rsi,num
-a1:
- shl rbx,4
- mov dl,[rsi]
- cmp dl,'9'
- jbe ok
- sub dl,7
-ok:
- sub dl,'0'
- add rbx,rdx
- inc rsi
- dec qword[cnt]
- jnz a1
- ret
-
-disp:
- mov rsi,buff
- mov rcx,16
-d1:
- rol rbx,4
- mov dl,bl
- and dl,0Fh
- cmp dl,9
- jbe ok2
- add dl,7
-ok2:
- add dl,30h
- mov [rsi],dl
- inc rsi
- loop d1
- write buff,16
- ret</pre>
+}</pre>
             </div>
         </div>
 
         <div class="problem">
-            <div class="problem-header" onclick="toggle(6)">Q9 - MENU Driven String Operations (Length, Concat, Palindrome)</div>
+            <div class="problem-header" onclick="toggle(6)">prefix to  infix</div>
             <div class="code-section" id="code6">
                 <button class="copy-btn" onclick="copyCode(6, event)">Copy</button>
-                <pre>%macro read 2
-    mov rax,0
-    mov rdi,0
-    mov rsi,%1
-    mov rdx,%2
-    syscall
-%endmacro
+                <pre>#include<iostream>
+#include<string>
+#include<stack>
+using namespace std;
 
-%macro write 2
-    mov rax,1
-    mov rdi,1
-    mov rsi,%1
-    mov rdx,%2
-    syscall
-%endmacro
+bool isOperator(char c){
+    return (c == '-' || c == '+'  || c=='*' || c== '/' || c=='^');
+}
 
-section .data
-menu db 10,"1.String Length",10,"2.String Concat",10,"3.String Palindrome",10,"4.Exit",10,"Choice: ",0
-mlen equ $-menu
+string prefixToInfix(string prefix){
+    stack<string>st;
 
-msg1 db "Enter String 1:",10,0
-l1 equ $-msg1
-msg2 db "Enter String 2:",10,0
-l2 equ $-msg2
+    for(int i = prefix.length() -1; i>=+0;i--){
 
-m_len db "Length = ",10,0
-ll equ $-m_len
+        if(!isOperator(prefix[i])){
+            st.push(string(1,prefix[i]));
+        }else{
+            string op1 = st.top();
+            st.pop();
+            string op2 = st.top();
+            st.pop();
 
-m_cat db "Concatenated: ",10,0
-lc equ $-m_cat
+            string newExp = "(" + op1 + prefix[i] + op2 + ")" ;
+            st.push(newExp);
+        }
+    }
+    return st.top();
+}
 
-m_pal1 db "Palindrome",10,0
-pm1 equ $-m_pal1
-m_pal2 db "Not Palindrome",10,0
-pm2 equ $-m_pal2
+int main(){
+    string prefix;
+    cout<<"Enter the prefix Expression: ";
+    cin>>prefix;
 
-section .bss
-s1 resb 40
-s2 resb 40
-s3 resb 80
-lval resq 1
-choice resb 2
-
-section .text
-global _start
-
-_start:
-write msg1,l1
-read s1,40
-dec rax
-mov [lval],rax
-
-write msg2,l2
-read s2,40
-
-menu_loop:
-write menu,mlen
-read choice,2
-
-cmp byte[choice],'1'
-je str_len
-cmp byte[choice],'2'
-je str_cat
-cmp byte[choice],'3'
-je str_pal
-cmp byte[choice],'4'
-je exit
-
-jmp menu_loop
-
-str_len:
-write m_len,ll
-mov rbx,[lval]
-call disp
-jmp menu_loop
-
-str_cat:
-mov rsi,s1
-mov rdi,s3
-mov rcx,[lval]
-cld
-rep movsb
-
-mov rsi,s2
-mov rcx,40
-rep movsb
-
-write m_cat,lc
-write s3,80
-jmp menu_loop
-
-str_pal:
-mov rsi,s1
-add rsi,[lval]
-dec rsi
-mov rdi,s3
-mov rcx,[lval]
-
-lp:
-mov al,[rsi]
-mov [rdi],al
-dec rsi
-inc rdi
-loop lp
-
-mov rsi,s1
-mov rdi,s3
-mov rcx,[lval]
-cld
-repe cmpsb
-jne notpal
-
-write m_pal1,pm1
-jmp menu_loop
-
-notpal:
-write m_pal2,pm2
-jmp menu_loop
-
-disp:
-mov rsi,s3
-mov rcx,16
-lp2:
-rol rbx,4
-mov dl,bl
-and dl,0Fh
-cmp dl,9
-jbe ok
-add dl,7
-ok:
-add dl,30h
-mov [rsi],dl
-inc rsi
-loop lp2
-write s3,16
-ret
-
-exit:
-mov rax,60
-xor rdi,rdi
-syscall</pre>
+    cout<<prefixToInfix(prefix);
+}</pre>
             </div>
         </div>
 
         <div class="problem">
-            <div class="problem-header" onclick="toggle(7)">Q10 - MENU Driven String Operations (Length, Compare, Copy)</div>
+            <div class="problem-header" onclick="toggle(7)">sudoku solver</div>
             <div class="code-section" id="code7">
                 <button class="copy-btn" onclick="copyCode(7, event)">Copy</button>
-                <pre>%macro read 2
-    mov rax,0
-    mov rdi,0
-    mov rsi,%1
-    mov rdx,%2
-    syscall
-%endmacro
+                <pre>#include<iostream>
+using namespace std;
 
-%macro write 2
-    mov rax,1
-    mov rdi,1
-    mov rsi,%1
-    mov rdx,%2
-    syscall
-%endmacro
+void printSudoku(int arr[][4]){
+    for(int i = 0;i<4;i++){
+        for(int j = 0;j<4;j++){
+            cout<<arr[i][j]<< " ";
+        }
+        cout<<endl;
+    }
+}
 
-section .data
-menu db 10,"1.String Length",10,"2.String Compare",10,"3.String Copy",10,"4.Exit",10,"Choice: ",0
-mlen equ $-menu
+bool isSafeSudoku(int arr[4][4],int row,int col,int digit){
+    for(int i = 0; i<4;i++){  // vertical
+        if(arr[i][col] == digit ){
+            return false;
+        }
+    }
 
-msg1 db "Enter String 1:",10,0
-l1 equ $-msg1
-msg2 db "Enter String 2:",10,0
-l2 equ $-msg2
+    for(int j = 0; j<4;j++){  // horizontal
+        if(arr[row][j]==digit){
+            return false;
+        }
+    }    
+   
+   //grid 2x2
+   int startCol = (col/2)*2;
+   int startRow = (row/2)*2;
+   for(int i = startRow; i<=startRow+1 ;i++){
+    for(int j = startCol; j<=startCol+1; j++){
+        if(arr[i][j] == digit){
+            return false;
+        }
+    }
+   }
+   return true;
+}
 
-ml db "Length = ",10,0
-mln equ $-ml
+bool sudokuSolver(int arr[][4],int row,int col){
+    if(row == 4){
+        printSudoku(arr);
+        return true;
+    }
 
-eqmsg db "Equal",10,0
-neqmsg db "Not Equal",10,0
-leq equ $-eqmsg
-lneq equ $-neqmsg
+    int nextRow = row;
+    int nextCol = col + 1;
+    if(nextCol == 4){
+        nextRow = row + 1;
+        nextCol = 0;
+    }
 
-cpmsg db "Copied: ",10,0
-lc equ $-cpmsg
+    if(arr[row][col] != 0){
+        return sudokuSolver(arr,nextRow,nextCol);
+    }
 
-section .bss
-s1 resb 40
-s2 resb 40
-s3 resb 40
-ln resq 1
-choice resb 2
+    for(int digit = 1;digit<5;digit++){
+        if(isSafeSudoku(arr,row,col,digit)){
+            arr[row][col] = digit;
+            if(sudokuSolver(arr,nextRow,nextCol)){
+                return true;
+            }
+            arr[row][col]=0;
+        }
+    }
+    return false;
+}
 
-section .text
-global _start
+int main(){
+    int arr[4][4] = {
+        {0,2,0,0},
+        {0,0,0,0},
+        {3,0,0,0},
+        {0,0,4,0}
+    };
 
-_start:
-write msg1,l1
-read s1,40
-dec rax
-mov [ln],rax
+    if(!sudokuSolver(arr,0,0)){
+        cout<<"solution does not exist"<<endl;
+    }
 
-write msg2,l2
-read s2,40
-
-menu_loop:
-write menu,mlen
-read choice,2
-
-cmp byte[choice],'1'
-je len
-cmp byte[choice],'2'
-je cmp1
-cmp byte[choice],'3'
-je cp
-cmp byte[choice],'4'
-je exit
-
-jmp menu_loop
-
-len:
-write ml,mln
-mov rbx,[ln]
-call disp
-jmp menu_loop
-
-cmp1:
-mov rbx,[ln]
-cmp rbx,40
-jne ne
-mov rsi,s1
-mov rdi,s2
-mov rcx,[ln]
-cld
-repe cmpsb
-jne ne
-
-write eqmsg,leq
-jmp menu_loop
-ne:
-write neqmsg,lneq
-jmp menu_loop
-
-cp:
-mov rsi,s1
-mov rdi,s3
-mov rcx,[ln]
-cld
-rep movsb
-write cpmsg,lc
-write s3,[ln]
-jmp menu_loop
-
-disp:
-mov rsi,s3
-mov rcx,16
-lp2:
-rol rbx,4
-mov dl,bl
-and dl,0Fh
-cmp dl,9
-jbe ok
-add dl,7
-ok:
-add dl,30h
-mov [rsi],dl
-inc rsi
-loop lp2
-write s3,16
-ret
-
-exit:
-mov rax,60
-xor rdi,rdi
-syscall</pre>
+}</pre>
             </div>
         </div>
 
         <div class="problem">
-            <div class="problem-header" onclick="toggle(8)">Q11 - MENU Driven String Operations (Length, Reverse, Palindrome)</div>
+            <div class="problem-header" onclick="toggle(8)">Input restricted deque</div>
             <div class="code-section" id="code8">
                 <button class="copy-btn" onclick="copyCode(8, event)">Copy</button>
-                <pre>%macro read 2
-    mov rax,0
-    mov rdi,0
-    mov rsi,%1
-    mov rdx,%2
-    syscall
-%endmacro
+                <pre>#include<iostream>
+using namespace std;
 
-%macro write 2
-    mov rax,1
-    mov rdi,1
-    mov rsi,%1
-    mov rdx,%2
-    syscall
-%endmacro
+class Deque{
+    int capacity;
+    int currsize;
+    int *arr;
+    int f,r;
 
-section .data
-menu db 10,"1.String Length",10,"2.String Reverse",10,"3.String Palindrome",10,"4.Exit",10,"Choice: ",0
-ml equ $-menu
+public:
+    Deque(int cap){
+        capacity = cap;
+        currsize = 0;
+        arr = new int (cap);
 
-msg db "Enter String:",10,0
-lm equ $-msg
+        f = 0;
+        r = -1;
+    }
 
-mlen db "Length = ",10,0
-llen equ $-mlen
+    void push_back(int data){
+        if(currsize == capacity){
+            cout<<"Deque is Full\n";
+            return;
+        }
+         r = (r + 1)%capacity;  
+         arr[r] = data; 
+         currsize++;
+    }
 
-mrev db "Reversed: ",10,0
-lrev equ $-mrev
+    void pop_front(){
+        if(empty()){
+            cout<<"Deque is Empty\n";
+            return;
+        }
+        f = (f + 1)%capacity;
+        currsize--;
+    }
 
-p1 db "Palindrome",10,0
-lp1 equ $-p1
-p2 db "Not Palindrome",10,0
-lp2 equ $-p2
+    void pop_back(){
+        if(empty()){
+            cout<<"Deque is Empty\n";
+            return;
+        }
+        r = ( r - 1)%capacity;
+        currsize--;
+    }
 
-section .bss
-s1 resb 40
-s2 resb 40
-ln resq 1
-choice resb 2
+    bool empty(){
+        return currsize == 0;  
+    }
 
-section .text
-global _start
+    void front(){
+        if(empty()){
+            cout<<"Deque is empty\n";
+            return;
+        }
+        cout<<"Front value is: "<<arr[front]<<endl;
+        return;
+    }
 
-_start:
-write msg,lm
-read s1,40
-dec rax
-mov [ln],rax
+    void rear(){
+        if(empty()){
+            cout<<"Deque is empty/\n";
+            return;
+        }
+        cout<<"Rear value is: "<<arr[rear]<<endl;
+        return;
+    }
 
-menu_loop:
-write menu,ml
-read choice,2
+    void print(){
+        if(empty()){
+            cout<<"Deque is empty/\n";
+            return;
+        }
+        int i = front;
+        while(i != rear){
+            cout<<arr[i]<<" ";
+            i++;
+        }
+        if(i == rear){
+            cout<<arr[i]<<endl;
+        }
 
-cmp byte[choice],'1'
-je len
-cmp byte[choice],'2'
-je rev
-cmp byte[choice],'3'
-je pal
-cmp byte[choice],'4'
-je exit
+    }
+};
 
-jmp menu_loop
+int main(){
+    Deque d1;
+    d1.push_back(5);  
+    d1.push_back(7);
+    d1.push_back(3);
+    d1.push_back(8);
+    d1.print();
 
-len:
-write mlen,llen
-mov rbx,[ln]
-call disp
-jmp menu_loop
-
-rev:
-mov rsi,s1
-add rsi,[ln]
-dec rsi
-mov rdi,s2
-mov rcx,[ln]
-lp:
-mov al,[rsi]
-mov [rdi],al
-dec rsi
-inc rdi
-loop lp
-write mrev,lrev
-write s2,[ln]
-jmp menu_loop
-
-pal:
-mov rsi,s1
-add rsi,[ln]
-dec rsi
-mov rdi,s2
-mov rcx,[ln]
-l1:
-mov al,[rsi]
-mov [rdi],al
-dec rsi
-inc rdi
-loop l1
-
-mov rsi,s1
-mov rdi,s2
-mov rcx,[ln]
-cld
-repe cmpsb
-jne np
-
-write p1,lp1
-jmp menu_loop
-
-np:
-write p2,lp2
-jmp menu_loop
-
-disp:
-mov rsi,s2
-mov rcx,16
-l3:
-rol rbx,4
-mov dl,bl
-and dl,0Fh
-cmp dl,9
-jbe ok
-add dl,7
-ok:
-add dl,30h
-mov [rsi],dl
-inc rsi
-loop l3
-write s2,16
-ret
-
-exit:
-mov rax,60
-xor rdi,rdi
-syscall</pre>
+}</pre>
             </div>
         </div>
 
         <div class="problem">
-            <div class="problem-header" onclick="toggle(9)">Q12 - Quadratic Equation for All Cases</div>
+            <div class="problem-header" onclick="toggle(9)">hashing all </div>
             <div class="code-section" id="code9">
                 <button class="copy-btn" onclick="copyCode(9, event)">Copy</button>
-                <pre>%macro write 2
-    mov rax,1
-    mov rdi,1
-    mov rsi,%1
-    mov rdx,%2
-    syscall
-%endmacro
+                <pre>// linear probing hashing
+                    #include<iostream>
+using namespace std;
 
-%macro read 2
-    mov rax,0
-    mov rdi,0
-    mov rsi,%1
-    mov rdx,%2
-    syscall
-%endmacro
+#define size 6
 
-section .data
-ma db "Enter a: ",0
-la equ $-ma
-mb db "Enter b: ",0
-lb equ $-mb
-mc db "Enter c: ",0
-lc equ $-mc
+class HashingTable{
+public:
+    int table[size];
 
-r1msg db "Root 1: ",0
-lr1 equ $-r1msg
-r2msg db "Root 2: ",0
-lr2 equ $-r2msg
-eqmsg db "Equal Root: ",0
-leq equ $-eqmsg
-img db "Imaginary Roots",10,0
-limg equ $-img
+    HashingTable(){
+        for (int i = 0; i < size; i++) {
+            table[i] = -1;
+        }
+    }
 
-nl db 10
+    int hashFunction(int key){
+        return key % size;
+    }
 
-section .bss
-a resq 1
-b resq 1
-c resq 1
-D resq 1
-r1 resq 1
-r2 resq 1
-buf resb 64
+    void insert(int key){
+        int index = hashFunction(key);
 
-section .text
-global _start
+        int start = index;
+        while(table[index] != -1){
+            index = (index + 1)%size;
 
-_start:
-write ma,la
-read buf,64
-mov rsi,buf
-call toint
-mov [a],rax
+            if(index == start){
+                cout<<"Hash Table FULL! Cannot insert"<<key<<endl;
+            }
+        }
+        table[index] = key;
+        // cout<< "Inserted "<<key <<" at index "<<index<<endl;
+    }
 
-write mb,lb
-read buf,64
-mov rsi,buf
-call toint
-mov [b],rax
+    void display(){
+        cout<<"\n Hashing Table:\n";
+        for(int i = 0;i<size;i++){
+            if(table[i]== -1){
+                cout<<i<<" : empty\n";
+            }else{
+                cout<<i<<" : "<<table[i]<<endl;
+            }
+        }
+    }
+};
 
-write mc,lc
-read buf,64
-mov rsi,buf
-call toint
-mov [c],rax
+int main(){
+    HashingTable h;
+    int n,key;
 
-mov rax,[b]
-imul rax,rax
-mov rcx,rax
+    cout<<"How many cold drink flavour codes to insert? :";
+    cin>>n;
 
-mov rax,[a]
-imul rax,[c]
-shl rax,2
-sub rcx,rax
-mov [D],rcx
+    for(int i = 0;i<n;i++){
+        cout<<"Enter key: ";
+        cin>>key;
+        h.insert(key);
+    }
 
-cmp rcx,0
-jl imaginary
-je equal
+    h.display();
 
-mov rax,[D]
-call isqrt
-mov rbx,rax
+    return 0;   
 
-mov rax,[b]
-neg rax
-sub rax,rbx
-mov r8,[a]
-shl r8,1
-cqo
-idiv r8
-mov [r1],rax
 
-mov rax,[b]
-neg rax
-add rax,rbx
-mov r8,[a]
-shl r8,1
-cqo
-idiv r8
-mov [r2],rax
+} 
+        
+  // hashing linklist probing
+        #include<iostream>
+using namespace std;
 
-write r1msg,lr1
-mov rax,[r1]
-call tostr
-write rsi,rdx
-write nl,1
+class Node{
+public:
+    int data;
+    Node* next;
 
-write r2msg,lr2
-mov rax,[r2]
-call tostr
-write rsi,rdx
-write nl,1
-jmp exit
+    Node(int da){
+        data = da;
+        next = NULL;
+    }
+};
 
-equal:
-mov rax,[b]
-neg rax
-mov rbx,[a]
-shl rbx,1
-cqo
-idiv rbx
-mov [r1],rax
-write eqmsg,leq
-mov rax,[r1]
-call tostr
-write rsi,rdx
-write nl,1
-jmp exit
+class HashTable{
+public:
+    Node * table[20];
 
-imaginary:
-write img,limg
-jmp exit
+    HashTable(){
+        for(int i = 0;i<20;i++){
+            table[i] = NULL;
+        }
+    }
 
-exit:
-mov rax,60
-xor rdi,rdi
-syscall
+    int hashFunction(int key){
+        return key%20;
+    }
 
-toint:
-xor rax,rax
-xor rcx,rcx
-.next:
-mov bl,[rsi]
-cmp bl,10
-je .done
-sub bl,'0'
-imul rax,10
-add rax,rbx
-inc rsi
-jmp .next
-.done:
-ret
+    void insert(int key){
+        int index = hashFunction(key);
 
-isqrt:
-cmp rax,0
-jle .done2
-mov rcx,rax
-xor rbx,rbx
-lp:
-mov rdx,rbx
-imul rdx,rbx
-cmp rdx,rcx
-ja f
-inc rbx
-jmp lp
-f:
-dec rbx
-mov rax,rbx
-.done2:
-ret
+        Node* newNode = new Node(key);
 
-tostr:
-mov rdi,buf
-mov rcx,10
-lea rbx,[rdi+30]
-mov byte[rbx],0
-.loop:
-xor rdx,rdx
-div rcx
-add dl,'0'
-dec rbx
-mov [rbx],dl
-test rax,rax
-jnz .loop
-mov rsi,rbx
-mov rdx,0
-l2:
-cmp byte[rsi+rdx],0
-je end
-inc rdx
-jmp l2
-end:
-ret</pre>
+        if(table[index] == NULL){
+            table[index] = newNode;
+        }else{
+            Node* temp = table[index];
+            while(temp -> next != NULL){
+                temp = temp ->next;
+            }
+            temp->next = newNode;
+        }
+    }
+
+    void display(){
+        cout<<" ------Hashing Table--------"<<endl;
+        for(int i = 0;i<20;i++){
+            cout<<i<<" --> ";
+            Node* temp = table[i]; 
+            if(!temp){
+                cout<<"EMPTY ";
+                cout<<endl;
+            }else{
+                while(temp){
+                    cout<<temp->data<<" --> ";
+                    temp = temp -> next;
+                }
+                cout<<"NULL ";
+                cout<<endl;
+            }
+        }
+
+
+
+
+        
+          
+    }
+
+};
+
+int main(){
+    HashTable ht;
+    int data[20]={ 33,56,78,12,10,67,89,99,100,23,45,71,39,62,59,90,91,20,75,66};
+
+    for(int i = 0 ;i<20;i++){
+        ht.insert(data[i]);
+    }
+
+    ht.display();
+    return 0;
+}
+
+//hashing quadratic probing
+
+    #include<iostream>
+#include<vector>
+using namespace std;
+
+const int size = 11;
+const int empty = -1;
+
+class QuadHash{
+    vector<int> table;
+public:
+    QuadHash() : table(size,empty){}
+
+    int hashFunc(int key){
+        return key % size;
+    }
+
+    bool insertKey(int key){
+        int h = hashFunc(key);
+        
+        for(int i = 0;i<size;i++){
+            int idx = (h + i * i)%size;
+
+            if(table[idx] == empty){
+                table[idx] = key;
+                return true;
+            }
+            if(table[idx] == key) return false;
+        }
+        return false;
+    }
+
+    int searchKey(int key){
+        int h = hashFunc(key);
+        for(int i = 0;i<size;i++){
+            int idx = (h + i * i )%size;
+            if(table[idx] == empty) return -1;
+            if(table[idx] == key) return idx;
+        }
+        return -1;
+    }
+
+    void display(){
+        cout<<"\nHash Table\n";
+        for(int i = 0;i<size;i++){
+            if(table[i] == empty) cout<<i<<" : Empty\n";
+            else cout<<i<<" : "<<table[i] <<"\n";
+        }
+        cout<<endl;
+    }
+    
+};
+
+int main(){
+     QuadHash ht;
+
+    // Given mango counts (10 values). If you have 11th, add it here.
+    int data[] = {25, 15, 10, 5, 11, 19, 16, 36, 42, 28};
+    int n = sizeof(data) / sizeof(data[0]);
+
+    cout << "Inserting mango counts using hash(key) = key % 11 and quadratic probing.\n";
+    for (int i = 0; i < n; ++i) {
+        bool ok = ht.insertKey(data[i]);
+        if (ok) cout << "Inserted " << data[i] << '\n';
+        else cout << "Failed to insert " << data[i] << " (table full or duplicate)\n";
+    }
+
+    ht.display();
+
+    // small interactive demo (optional)
+    // you can search for a value:
+    int x;
+    cout << "Enter a value to search (or -1 to exit): ";
+    while (cin >> x && x != -1) {
+        int idx = ht.searchKey(x);
+        if (idx == -1) cout << x << " NOT FOUND\n";
+        else cout << x << " found at index " << idx << '\n';
+        cout << "Enter a value to search (or -1 to exit): ";
+    }
+}
+    </pre>
             </div>
         </div>
 
