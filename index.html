@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Applied Mathematics Lab · 2301254L</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=DM+Serif+Display:ital@0;1&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:        #0d0f14;
+    --surface:   #13161e;
+    --card:      #181c27;
+    --border:    #242838;
+    --accent:    #6c8eff;
+    --accent2:   #ff6584;
+    --accent3:   #41e8a0;
+    --text:      #e2e8f8;
+    --muted:     #7480a0;
+    --code-bg:   #0a0c12;
+    --tag-co:    rgba(108,142,255,.15);
+    --tag-rbt:   rgba(255,101,132,.15);
+    --tag-unit:  rgba(65,232,160,.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Figtree', sans-serif;
+    font-weight: 400;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  /* ══════════════ LAYOUT ══════════════ */
+  .shell { display: flex; min-height: 100vh; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 270px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-brand {
+    padding: 28px 22px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-brand .logo-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .sidebar-brand h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+    line-height: 1.3;
+    color: var(--text);
+  }
+  .sidebar-brand .meta {
+    margin-top: 10px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    line-height: 1.8;
+  }
+
+  .sidebar-nav { flex: 1; padding: 14px 0 20px; }
+  .nav-section {
+    padding: 10px 22px 4px;
+    font-size: 9.5px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .nav-item {
+    display: block;
+    padding: 7px 22px;
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: all .18s ease;
+    line-height: 1.4;
+  }
+  .nav-item:hover { color: var(--text); border-left-color: var(--accent); background: rgba(108,142,255,.05); }
+  .nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(108,142,255,.08); }
+  .nav-item .pno {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    margin-right: 6px;
+    opacity: .8;
+  }
+
+  /* ── MAIN ── */
+  .main { flex: 1; min-width: 0; }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, #0f1320 0%, #111627 50%, #0d1018 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 64px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 80% 40%, rgba(108,142,255,.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .hero h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    line-height: 1.15;
+    color: #fff;
+    max-width: 640px;
+  }
+  .hero h2 em { font-style: italic; color: var(--accent); }
+  .hero-sub {
+    margin-top: 18px;
+    font-size: 0.9rem;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.7;
+  }
+  .hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 13px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-family: 'IBM Plex Mono', monospace;
+    border: 1px solid;
+  }
+  .badge-blue  { background: rgba(108,142,255,.1); border-color: rgba(108,142,255,.3); color: #96b0ff; }
+  .badge-green { background: rgba(65,232,160,.08); border-color: rgba(65,232,160,.25); color: #5ef0b4; }
+  .badge-pink  { background: rgba(255,101,132,.08); border-color: rgba(255,101,132,.25); color: #ff8ea6; }
+
+  /* ── INSTRUCTIONS ── */
+  .instructions-section {
+    padding: 48px 64px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: var(--text);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .inst-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .inst-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 24px;
+  }
+  .inst-card h3 {
+    font-size: 0.78rem;
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .inst-card ul { list-style: none; }
+  .inst-card ul li {
+    position: relative;
+    padding-left: 16px;
+    font-size: 0.83rem;
+    color: #bbc6e0;
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+  .inst-card ul li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* ── LIST OF PRACTICALS ── */
+  .toc-section {
+    padding: 48px 64px;
+    border-bottom: 1px solid var(--border);
+  }
+  .toc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.83rem;
+  }
+  .toc-table thead th {
+    text-align: left;
+    padding: 10px 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  .toc-table tbody tr {
+    border-bottom: 1px solid rgba(36,40,56,.6);
+    transition: background .15s;
+    cursor: pointer;
+  }
+  .toc-table tbody tr:hover { background: rgba(108,142,255,.04); }
+  .toc-table tbody td { padding: 11px 16px; }
+  .toc-table .sr { color: var(--muted); font-family: 'IBM Plex Mono', monospace; font-size: 11px; }
+  .toc-table .pnum {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+  }
+  .toc-table .title-cell a {
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .toc-table .title-cell a:hover { color: var(--accent); }
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .tag-co  { background: var(--tag-co);  color: #96b0ff; }
+  .tag-rbt { background: var(--tag-rbt); color: #ff8ea6; }
+
+  /* ── PRACTICALS ── */
+  .practicals-section { padding: 48px 64px 80px; }
+
+  .practical {
+    margin-bottom: 64px;
+    scroll-margin-top: 24px;
+  }
+
+  .practical-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 28px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+  }
+  .prac-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(108,142,255,.1);
+    border: 1px solid rgba(108,142,255,.2);
+    border-radius: 6px;
+    padding: 6px 10px;
+    white-space: nowrap;
+    margin-top: 3px;
+  }
+  .prac-title-block {}
+  .prac-title-block h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.55rem;
+    color: #fff;
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+  .prac-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .prac-tag {
+    padding: 3px 10px;
+    border-radius: 5px;
+    font-size: 10.5px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .prac-tag-unit { background: var(--tag-unit); color: #5ef0b4; }
+  .prac-tag-co   { background: var(--tag-co);   color: #96b0ff; }
+  .prac-tag-rbt  { background: var(--tag-rbt);  color: #ff8ea6; }
+
+  .prac-body { display: grid; gap: 20px; }
+
+  .prac-block {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .prac-block-header {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,.02);
+  }
+  .prac-block-header .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+  .dot-aim   { background: #41e8a0; }
+  .dot-theory{ background: #6c8eff; }
+  .dot-code  { background: #ff6584; }
+  .dot-output{ background: #ffc46b; }
+  .dot-result{ background: #b88cff; }
+
+  .prac-block-header span {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .prac-block-body {
+    padding: 20px 24px;
+    font-size: 0.875rem;
+    color: #c8d4ee;
+    line-height: 1.75;
+  }
+
+  /* ── CODE BLOCK ── */
+  .code-wrap { position: relative; }
+  .code-wrap pre {
+    background: var(--code-bg);
+    border-radius: 0;
+    margin: 0;
+    padding: 20px 22px;
+    overflow-x: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: #abb2bf;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: rgba(108,142,255,.12);
+    border: 1px solid rgba(108,142,255,.25);
+    color: #96b0ff;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all .2s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .copy-btn:hover { background: rgba(108,142,255,.22); border-color: rgba(108,142,255,.5); }
+  .copy-btn.copied { background: rgba(65,232,160,.12); border-color: rgba(65,232,160,.3); color: #41e8a0; }
+  .copy-btn svg { width: 11px; height: 11px; }
+
+  /* ── SYNTAX HIGHLIGHTING ── */
+  .kw  { color: #c678dd; }   /* keyword */
+  .fn  { color: #61afef; }   /* function */
+  .str { color: #98c379; }   /* string */
+  .num { color: #d19a66; }   /* number */
+  .cm  { color: #5c6370; font-style: italic; } /* comment */
+  .op  { color: #56b6c2; }   /* operator/builtin */
+  .pm  { color: #e06c75; }   /* parameter */
+  .cls { color: #e5c07b; }   /* class */
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 28px 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .footer a { color: var(--accent); text-decoration: none; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .hero, .instructions-section, .toc-section, .practicals-section { padding-left: 24px; padding-right: 24px; }
+    .inst-grid { grid-template-columns: 1fr; }
+    .footer { padding: 20px 24px; flex-direction: column; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo-label">MIT Academy of Engineering</div>
+      <h1>Applied Mathematics Lab</h1>
+      <div class="meta">
+        Code: 2301254L<br>
+        Sem II · SY B.Tech<br>
+        Software Engineering
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Overview</div>
+      <a href="#instructions" class="nav-item">Instructions</a>
+      <a href="#practicals-list" class="nav-item">List of Practicals</a>
+      <div class="nav-section" style="margin-top:10px">Practicals</div>
+      <a href="#p1a" class="nav-item"><span class="pno">1A</span>Matrix Operations</a>
+      <a href="#p1b" class="nav-item"><span class="pno">1B</span>Eigenvalues &amp; Diagonalization</a>
+      <a href="#p1c" class="nav-item"><span class="pno">1C</span>Gaussian Elimination</a>
+      <a href="#p2a" class="nav-item"><span class="pno">2A</span>Binomial &amp; Normal Dist.</a>
+      <a href="#p2b" class="nav-item"><span class="pno">2B</span>Joint PMF</a>
+      <a href="#p2c" class="nav-item"><span class="pno">2C</span>Central Limit Theorem</a>
+      <a href="#p3a" class="nav-item"><span class="pno">3A</span>Z-Test (Single Mean)</a>
+      <a href="#p4b" class="nav-item"><span class="pno">4B</span>n-Step Transition Prob.</a>
+      <a href="#p5c" class="nav-item"><span class="pno">5C</span>Simple Linear Regression</a>
+      <a href="#p6a" class="nav-item"><span class="pno">6A</span>Lagrange Interpolation</a>
+    </nav>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <main class="main">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-eyebrow">Department of Computer Engineering · Software Engineering</div>
+      <h2>Applied <em>Mathematics</em><br>Laboratory Manual</h2>
+      <p class="hero-sub">Course Code 2301254L · Academic Year 2025–2026 · Semester II · SYCE-SE</p>
+      <div class="hero-badges">
+        <span class="badge badge-blue">Python 3.x</span>
+        <span class="badge badge-blue">NumPy · SciPy</span>
+        <span class="badge badge-blue">Matplotlib</span>
+        <span class="badge badge-blue">scikit-learn</span>
+        <span class="badge badge-green">10 Practicals</span>
+        <span class="badge badge-pink">CO1 · CO2 · CO3 · CO4</span>
+      </div>
+    </section>
+
+    <!-- INSTRUCTIONS -->
+    <section class="instructions-section" id="instructions">
+      <h2 class="section-title">Instructions to Students for Lab ESE</h2>
+      <div class="inst-grid">
+        <div class="inst-card">
+          <h3>General Instructions</h3>
+          <ul>
+            <li>Carry your Student ID card for the examination.</li>
+            <li>Mobile phones and electronic gadgets are strictly prohibited inside the hall.</li>
+            <li>Read each practical carefully — understand the aim, theory, and expected output.</li>
+            <li>All programs must be written/typed by yourself. Copy-paste from external sources is not permitted.</li>
+            <li>Each student is allotted one computer workstation. Do not change without permission.</li>
+            <li>Save your work periodically. Data loss due to negligence will not be compensated.</li>
+          </ul>
+        </div>
+        <div class="inst-card">
+          <h3>Coding / Execution Instructions</h3>
+          <ul>
+            <li>Use <strong style="color:#c678dd">Python 3.x</strong> only. Required libraries: NumPy, SciPy, Matplotlib, scikit-learn.</li>
+            <li>Naming convention for files: <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#98c379">PRN_PracticalNo.py</code> (e.g. <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#98c379">A001_3A.py</code>).</li>
+            <li>Run the code and verify output is correct before showing to the examiner.</li>
+            <li>Debug independently first. Ask the examiner only if the issue persists for more than 5 minutes.</li>
+            <li>Graphs and plots must be saved as <code style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#98c379">.png</code> files and pasted in the practical file.</li>
+            <li>Do not delete or modify any pre-installed library or system file on the lab computer.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIST OF PRACTICALS -->
+    <section class="toc-section" id="practicals-list">
+      <h2 class="section-title">List of Practicals</h2>
+      <table class="toc-table">
+        <thead>
+          <tr>
+            <th>Sr.</th>
+            <th>Practical</th>
+            <th>Title</th>
+            <th>CO</th>
+            <th>RBT</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr onclick="location.href='#p1a'">
+            <td class="sr">01</td>
+            <td class="pnum">01-1A</td>
+            <td class="title-cell"><a href="#p1a">Matrix Addition, Multiplication &amp; Scalar Operations</a></td>
+            <td><span class="tag tag-co">CO1</span></td>
+            <td><span class="tag tag-rbt">L3</span></td>
+          </tr>
+          <tr onclick="location.href='#p1b'">
+            <td class="sr">02</td>
+            <td class="pnum">01-1B</td>
+            <td class="title-cell"><a href="#p1b">Eigenvalues, Eigenvectors &amp; Diagonalization</a></td>
+            <td><span class="tag tag-co">CO1</span></td>
+            <td><span class="tag tag-rbt">L3</span></td>
+          </tr>
+          <tr onclick="location.href='#p1c'">
+            <td class="sr">03</td>
+            <td class="pnum">01-1C</td>
+            <td class="title-cell"><a href="#p1c">Gaussian Elimination (from Scratch)</a></td>
+            <td><span class="tag tag-co">CO1</span></td>
+            <td><span class="tag tag-rbt">L3</span></td>
+          </tr>
+          <tr onclick="location.href='#p2a'">
+            <td class="sr">04</td>
+            <td class="pnum">02-2A</td>
+            <td class="title-cell"><a href="#p2a">Binomial &amp; Normal Distributions</a></td>
+            <td><span class="tag tag-co">CO2</span></td>
+            <td><span class="tag tag-rbt">L3</span></td>
+          </tr>
+          <tr onclick="location.href='#p2b'">
+            <td class="sr">05</td>
+            <td class="pnum">02-2B</td>
+            <td class="title-cell"><a href="#p2b">Joint Probability Mass Function</a></td>
+            <td><span class="tag tag-co">CO2</span></td>
+            <td><span class="tag tag-rbt">L3</span></td>
+          </tr>
+          <tr onclick="location.href='#p2c'">
+            <td class="sr">06</td>
+            <td class="pnum">02-2C</td>
+            <td class="title-cell"><a href="#p2c">Central Limit Theorem &amp; Probability Distribution Plot</a></td>
+            <td><span class="tag tag-co">CO2</span></td>
+            <td><span class="tag tag-rbt">L3</span></td>
+          </tr>
+          <tr onclick="location.href='#p3a'">
+            <td class="sr">07</td>
+            <td class="pnum">03-3A</td>
+            <td class="title-cell"><a href="#p3a">Large Sample Test for Single Mean (Z-test)</a></td>
+            <td><span class="tag tag-co">CO2</span></td>
+            <td><span class="tag tag-rbt">L4</span></td>
+          </tr>
+          <tr onclick="location.href='#p4b'">
+            <td class="sr">08</td>
+            <td class="pnum">04-4B</td>
+            <td class="title-cell"><a href="#p4b">n-Step Transition Probability</a></td>
+            <td><span class="tag tag-co">CO3</span></td>
+            <td><span class="tag tag-rbt">L3</span></td>
+          </tr>
+          <tr onclick="location.href='#p5c'">
+            <td class="sr">09</td>
+            <td class="pnum">05-5C</td>
+            <td class="title-cell"><a href="#p5c">Simple Linear Regression on a Real Dataset</a></td>
+            <td><span class="tag tag-co">CO4</span></td>
+            <td><span class="tag tag-rbt">L3</span></td>
+          </tr>
+          <tr onclick="location.href='#p6a'">
+            <td class="sr">10</td>
+            <td class="pnum">06-6A</td>
+            <td class="title-cell"><a href="#p6a">Lagrange's Interpolation Method</a></td>
+            <td><span class="tag tag-co">CO4</span></td>
+            <td><span class="tag tag-rbt">L3</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ══ PRACTICALS ══ -->
+    <section class="practicals-section">
+
+      <!-- ── 1A ── -->
+      <div class="practical" id="p1a">
+        <div class="practical-header">
+          <div class="prac-num">01-1A</div>
+          <div class="prac-title-block">
+            <h2>Matrix Addition, Multiplication &amp; Scalar Operations</h2>
+            <div class="prac-tags">
+              <span class="prac-tag prac-tag-unit">Unit 01</span>
+              <span class="prac-tag prac-tag-co">CO1</span>
+              <span class="prac-tag prac-tag-rbt">L3 – Apply</span>
+            </div>
+          </div>
+        </div>
+        <div class="prac-body">
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-aim"></div><span>Aim</span></div>
+            <div class="prac-block-body">To perform matrix addition, multiplication, and scalar operations using Python (NumPy).</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-theory"></div><span>Theory / Concept</span></div>
+            <div class="prac-block-body">
+              Matrices are rectangular arrays of numbers. Key operations:
+              <ul style="margin-top:10px;margin-left:18px;display:grid;gap:6px">
+                <li><strong>Addition</strong> — element-wise; requires same dimensions.</li>
+                <li><strong>Scalar multiplication</strong> — multiply every element by a scalar.</li>
+                <li><strong>Matrix multiplication</strong> — dot product; A×B requires cols(A) = rows(B).</li>
+              </ul>
+            </div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-code"></div><span>Python Code</span></div>
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy
+              </button>
+              <pre><span class="kw">import</span> numpy <span class="kw">as</span> <span class="op">np</span>
+
+<span class="cm"># Define matrices</span>
+A <span class="op">=</span> np.<span class="fn">array</span>([[<span class="num">1</span>, <span class="num">2</span>], [<span class="num">3</span>, <span class="num">4</span>]])
+B <span class="op">=</span> np.<span class="fn">array</span>([[<span class="num">5</span>, <span class="num">6</span>], [<span class="num">7</span>, <span class="num">8</span>]])
+scalar <span class="op">=</span> <span class="num">3</span>
+
+<span class="cm"># Matrix Addition</span>
+<span class="fn">print</span>(<span class="str">'Matrix Addition (A + B):'</span>)
+<span class="fn">print</span>(A <span class="op">+</span> B)
+
+<span class="cm"># Scalar Multiplication</span>
+<span class="fn">print</span>(<span class="str">'\nScalar Multiplication (3 * A):'</span>)
+<span class="fn">print</span>(scalar <span class="op">*</span> A)
+
+<span class="cm"># Matrix Multiplication</span>
+<span class="fn">print</span>(<span class="str">'\nMatrix Multiplication (A @ B):'</span>)
+<span class="fn">print</span>(A <span class="op">@</span> B)
+
+<span class="cm"># Transpose</span>
+<span class="fn">print</span>(<span class="str">'\nTranspose of A:'</span>)
+<span class="fn">print</span>(A.T)</pre>
+            </div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-output"></div><span>Expected Output</span></div>
+            <div class="prac-block-body">Displays results of each operation with labelled output.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-result"></div><span>Result</span></div>
+            <div class="prac-block-body">Successfully performed matrix addition, scalar multiplication, and matrix multiplication using NumPy.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 1B ── -->
+      <div class="practical" id="p1b">
+        <div class="practical-header">
+          <div class="prac-num">01-1B</div>
+          <div class="prac-title-block">
+            <h2>Eigenvalues, Eigenvectors &amp; Diagonalization</h2>
+            <div class="prac-tags">
+              <span class="prac-tag prac-tag-unit">Unit 01</span>
+              <span class="prac-tag prac-tag-co">CO1</span>
+              <span class="prac-tag prac-tag-rbt">L3 – Apply</span>
+            </div>
+          </div>
+        </div>
+        <div class="prac-body">
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-aim"></div><span>Aim</span></div>
+            <div class="prac-block-body">To compute eigenvalues and eigenvectors of a matrix and verify diagonalization.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-theory"></div><span>Theory / Concept</span></div>
+            <div class="prac-block-body">For a square matrix <strong>A</strong>, scalar <em>λ</em> is an eigenvalue and non-zero vector <strong>v</strong> is its eigenvector if <strong>Av = λv</strong>.<br><br>
+            Diagonalization: <strong>A = P D P⁻¹</strong> where D is diagonal (eigenvalues) and columns of P are eigenvectors.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-code"></div><span>Python Code</span></div>
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy
+              </button>
+              <pre><span class="kw">import</span> numpy <span class="kw">as</span> <span class="op">np</span>
+
+A <span class="op">=</span> np.<span class="fn">array</span>([[<span class="num">4</span>, <span class="num">1</span>],
+              [<span class="num">2</span>, <span class="num">3</span>]])
+
+<span class="cm"># Eigenvalues and eigenvectors</span>
+eigenvalues, eigenvectors <span class="op">=</span> np.linalg.<span class="fn">eig</span>(A)
+<span class="fn">print</span>(<span class="str">'Eigenvalues:'</span>, eigenvalues)
+<span class="fn">print</span>(<span class="str">'Eigenvectors (columns):'</span>)
+<span class="fn">print</span>(eigenvectors)
+
+<span class="cm"># Diagonalization: A = P D P^{-1}</span>
+P <span class="op">=</span> eigenvectors
+D <span class="op">=</span> np.<span class="fn">diag</span>(eigenvalues)
+P_inv <span class="op">=</span> np.linalg.<span class="fn">inv</span>(P)
+
+A_reconstructed <span class="op">=</span> P <span class="op">@</span> D <span class="op">@</span> P_inv
+<span class="fn">print</span>(<span class="str">'\nReconstructed A (should match original):'</span>)
+<span class="fn">print</span>(np.<span class="fn">round</span>(A_reconstructed, <span class="num">4</span>))
+
+<span class="cm"># Verification: A v = lambda v</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(eigenvalues)):
+    lam, v <span class="op">=</span> eigenvalues[i], eigenvectors[:, i]
+    <span class="fn">print</span>(<span class="str">f'\nAv = {A @ v} | lambda*v = {lam * v}'</span>)</pre>
+            </div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-output"></div><span>Expected Output</span></div>
+            <div class="prac-block-body">Eigenvalues, eigenvector matrix, reconstructed matrix A, and verification Av = λv.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-result"></div><span>Result</span></div>
+            <div class="prac-block-body">Eigenvalues and eigenvectors computed successfully; diagonalization verified.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 1C ── -->
+      <div class="practical" id="p1c">
+        <div class="practical-header">
+          <div class="prac-num">01-1C</div>
+          <div class="prac-title-block">
+            <h2>Gaussian Elimination (from Scratch)</h2>
+            <div class="prac-tags">
+              <span class="prac-tag prac-tag-unit">Unit 01</span>
+              <span class="prac-tag prac-tag-co">CO1</span>
+              <span class="prac-tag prac-tag-rbt">L3 – Apply</span>
+            </div>
+          </div>
+        </div>
+        <div class="prac-body">
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-aim"></div><span>Aim</span></div>
+            <div class="prac-block-body">To implement Gaussian Elimination from scratch to solve a system of linear equations.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-theory"></div><span>Theory / Concept</span></div>
+            <div class="prac-block-body">Gaussian elimination transforms the augmented matrix [A|b] to row-echelon form using elementary row operations, then applies back-substitution to find the solution vector <strong>x</strong>.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-code"></div><span>Python Code</span></div>
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy
+              </button>
+              <pre><span class="kw">import</span> numpy <span class="kw">as</span> <span class="op">np</span>
+
+<span class="kw">def</span> <span class="fn">gaussian_elimination</span>(<span class="pm">A</span>, <span class="pm">b</span>):
+    n <span class="op">=</span> <span class="fn">len</span>(b)
+    <span class="cm"># Augmented matrix</span>
+    M <span class="op">=</span> np.<span class="fn">hstack</span>([A.<span class="fn">astype</span>(<span class="cls">float</span>), b.<span class="fn">reshape</span>(<span class="op">-</span><span class="num">1</span>, <span class="num">1</span>).<span class="fn">astype</span>(<span class="cls">float</span>)])
+
+    <span class="cm"># Forward elimination</span>
+    <span class="kw">for</span> col <span class="kw">in</span> <span class="fn">range</span>(n):
+        <span class="cm"># Partial pivoting</span>
+        max_row <span class="op">=</span> np.<span class="fn">argmax</span>(<span class="fn">abs</span>(M[col:, col])) <span class="op">+</span> col
+        M[[col, max_row]] <span class="op">=</span> M[[max_row, col]]
+        <span class="kw">for</span> row <span class="kw">in</span> <span class="fn">range</span>(col <span class="op">+</span> <span class="num">1</span>, n):
+            factor <span class="op">=</span> M[row, col] <span class="op">/</span> M[col, col]
+            M[row] <span class="op">-=</span> factor <span class="op">*</span> M[col]
+
+    <span class="cm"># Back substitution</span>
+    x <span class="op">=</span> np.<span class="fn">zeros</span>(n)
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(n <span class="op">-</span> <span class="num">1</span>, <span class="op">-</span><span class="num">1</span>, <span class="op">-</span><span class="num">1</span>):
+        x[i] <span class="op">=</span> (M[i, <span class="op">-</span><span class="num">1</span>] <span class="op">-</span> np.<span class="fn">dot</span>(M[i, i<span class="op">+</span><span class="num">1</span>:n], x[i<span class="op">+</span><span class="num">1</span>:])) <span class="op">/</span> M[i, i]
+    <span class="kw">return</span> x
+
+A <span class="op">=</span> np.<span class="fn">array</span>([[<span class="num">2</span>,  <span class="num">1</span>, <span class="op">-</span><span class="num">1</span>],
+              [<span class="op">-</span><span class="num">3</span>, <span class="op">-</span><span class="num">1</span>,  <span class="num">2</span>],
+              [<span class="op">-</span><span class="num">2</span>,  <span class="num">1</span>,  <span class="num">2</span>]])
+b <span class="op">=</span> np.<span class="fn">array</span>([<span class="num">8</span>, <span class="op">-</span><span class="num">11</span>, <span class="op">-</span><span class="num">3</span>])
+
+x <span class="op">=</span> <span class="fn">gaussian_elimination</span>(A, b)
+<span class="fn">print</span>(<span class="str">'Solution x:'</span>, x)
+<span class="fn">print</span>(<span class="str">'Verification A@x:'</span>, np.<span class="fn">round</span>(A <span class="op">@</span> x, <span class="num">6</span>))</pre>
+            </div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-output"></div><span>Expected Output</span></div>
+            <div class="prac-block-body">Solution vector <strong>x</strong> and verification by computing A@x ≈ b.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-result"></div><span>Result</span></div>
+            <div class="prac-block-body">Gaussian elimination implemented from scratch and system of equations solved correctly.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 2A ── -->
+      <div class="practical" id="p2a">
+        <div class="practical-header">
+          <div class="prac-num">02-2A</div>
+          <div class="prac-title-block">
+            <h2>Binomial &amp; Normal Distributions</h2>
+            <div class="prac-tags">
+              <span class="prac-tag prac-tag-unit">Unit 02</span>
+              <span class="prac-tag prac-tag-co">CO2</span>
+              <span class="prac-tag prac-tag-rbt">L3 – Apply</span>
+            </div>
+          </div>
+        </div>
+        <div class="prac-body">
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-aim"></div><span>Aim</span></div>
+            <div class="prac-block-body">To demonstrate discrete (Binomial) and continuous (Normal) probability distributions using Python.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-theory"></div><span>Theory / Concept</span></div>
+            <div class="prac-block-body">
+              <strong>Binomial Distribution</strong> — models number of successes in <em>n</em> independent Bernoulli trials with probability <em>p</em>.<br><br>
+              <strong>Normal Distribution</strong> — bell-shaped continuous distribution characterised by mean <em>μ</em> and standard deviation <em>σ</em>.
+            </div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-code"></div><span>Python Code</span></div>
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy
+              </button>
+              <pre><span class="kw">import</span> numpy <span class="kw">as</span> <span class="op">np</span>
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> <span class="op">plt</span>
+<span class="kw">from</span> scipy.stats <span class="kw">import</span> binom, norm
+
+<span class="cm"># ── Binomial Distribution ────────────────────────────</span>
+n, p <span class="op">=</span> <span class="num">10</span>, <span class="num">0.5</span>
+x_b <span class="op">=</span> np.<span class="fn">arange</span>(<span class="num">0</span>, n <span class="op">+</span> <span class="num">1</span>)
+pmf <span class="op">=</span> binom.<span class="fn">pmf</span>(x_b, n, p)
+
+plt.<span class="fn">figure</span>(figsize<span class="op">=</span>(<span class="num">12</span>, <span class="num">5</span>))
+plt.<span class="fn">subplot</span>(<span class="num">1</span>, <span class="num">2</span>, <span class="num">1</span>)
+plt.<span class="fn">bar</span>(x_b, pmf, color<span class="op">=</span><span class="str">'steelblue'</span>, edgecolor<span class="op">=</span><span class="str">'navy'</span>)
+plt.<span class="fn">title</span>(<span class="str">'Binomial Distribution (n=10, p=0.5)'</span>)
+plt.<span class="fn">xlabel</span>(<span class="str">'Number of Successes'</span>)
+plt.<span class="fn">ylabel</span>(<span class="str">'Probability'</span>)
+
+<span class="cm"># ── Normal Distribution ──────────────────────────────</span>
+mu, sigma <span class="op">=</span> <span class="num">0</span>, <span class="num">1</span>
+x_n <span class="op">=</span> np.<span class="fn">linspace</span>(<span class="op">-</span><span class="num">4</span>, <span class="num">4</span>, <span class="num">200</span>)
+pdf <span class="op">=</span> norm.<span class="fn">pdf</span>(x_n, mu, sigma)
+
+plt.<span class="fn">subplot</span>(<span class="num">1</span>, <span class="num">2</span>, <span class="num">2</span>)
+plt.<span class="fn">plot</span>(x_n, pdf, color<span class="op">=</span><span class="str">'crimson'</span>, lw<span class="op">=</span><span class="num">2</span>)
+plt.<span class="fn">fill_between</span>(x_n, pdf, alpha<span class="op">=</span><span class="num">0.2</span>, color<span class="op">=</span><span class="str">'crimson'</span>)
+plt.<span class="fn">title</span>(<span class="str">'Normal Distribution (mu=0, sigma=1)'</span>)
+plt.<span class="fn">xlabel</span>(<span class="str">'x'</span>); plt.<span class="fn">ylabel</span>(<span class="str">'PDF'</span>)
+
+plt.<span class="fn">tight_layout</span>()
+plt.<span class="fn">savefig</span>(<span class="str">'distributions.png'</span>, dpi<span class="op">=</span><span class="num">150</span>)
+plt.<span class="fn">show</span>()
+
+<span class="fn">print</span>(<span class="str">'Mean (Binomial):'</span>, binom.<span class="fn">mean</span>(n, p))
+<span class="fn">print</span>(<span class="str">'Variance (Binomial):'</span>, binom.<span class="fn">var</span>(n, p))</pre>
+            </div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-output"></div><span>Expected Output</span></div>
+            <div class="prac-block-body">Side-by-side plots of Binomial PMF and Normal PDF; printed mean and variance.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-result"></div><span>Result</span></div>
+            <div class="prac-block-body">Binomial and Normal distributions demonstrated and plotted successfully.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 2B ── -->
+      <div class="practical" id="p2b">
+        <div class="practical-header">
+          <div class="prac-num">02-2B</div>
+          <div class="prac-title-block">
+            <h2>Joint Probability Mass Function</h2>
+            <div class="prac-tags">
+              <span class="prac-tag prac-tag-unit">Unit 02</span>
+              <span class="prac-tag prac-tag-co">CO2</span>
+              <span class="prac-tag prac-tag-rbt">L3 – Apply</span>
+            </div>
+          </div>
+        </div>
+        <div class="prac-body">
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-aim"></div><span>Aim</span></div>
+            <div class="prac-block-body">To implement and visualize a Joint Probability Mass Function (JPMF) for two discrete random variables.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-theory"></div><span>Theory / Concept</span></div>
+            <div class="prac-block-body">A Joint PMF P(X=x, Y=y) gives the probability that discrete random variable X takes value x AND Y takes value y simultaneously. Marginal distributions are obtained by summing over the other variable.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-code"></div><span>Python Code</span></div>
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy
+              </button>
+              <pre><span class="kw">import</span> numpy <span class="kw">as</span> <span class="op">np</span>
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> <span class="op">plt</span>
+
+<span class="cm"># Joint PMF table (rows = X values, cols = Y values)</span>
+<span class="cm"># X in {1,2,3}, Y in {1,2,3}</span>
+joint_pmf <span class="op">=</span> np.<span class="fn">array</span>([
+    [<span class="num">0.10</span>, <span class="num">0.08</span>, <span class="num">0.06</span>],
+    [<span class="num">0.07</span>, <span class="num">0.15</span>, <span class="num">0.10</span>],
+    [<span class="num">0.05</span>, <span class="num">0.12</span>, <span class="num">0.27</span>]
+])
+
+<span class="fn">print</span>(<span class="str">'Joint PMF Table:'</span>)
+<span class="fn">print</span>(joint_pmf)
+<span class="fn">print</span>(<span class="str">'Sum of all probabilities:'</span>, joint_pmf.<span class="fn">sum</span>())
+
+<span class="cm"># Marginal distributions</span>
+marginal_X <span class="op">=</span> joint_pmf.<span class="fn">sum</span>(axis<span class="op">=</span><span class="num">1</span>)
+marginal_Y <span class="op">=</span> joint_pmf.<span class="fn">sum</span>(axis<span class="op">=</span><span class="num">0</span>)
+
+<span class="fn">print</span>(<span class="str">'\nMarginal PMF of X:'</span>, marginal_X)
+<span class="fn">print</span>(<span class="str">'Marginal PMF of Y:'</span>, marginal_Y)
+
+<span class="cm"># Heatmap visualization</span>
+plt.<span class="fn">figure</span>(figsize<span class="op">=</span>(<span class="num">6</span>, <span class="num">5</span>))
+plt.<span class="fn">imshow</span>(joint_pmf, cmap<span class="op">=</span><span class="str">'Blues'</span>, aspect<span class="op">=</span><span class="str">'auto'</span>)
+plt.<span class="fn">colorbar</span>(label<span class="op">=</span><span class="str">'Probability'</span>)
+plt.<span class="fn">xticks</span>([<span class="num">0</span>, <span class="num">1</span>, <span class="num">2</span>], [<span class="str">'Y=1'</span>, <span class="str">'Y=2'</span>, <span class="str">'Y=3'</span>])
+plt.<span class="fn">yticks</span>([<span class="num">0</span>, <span class="num">1</span>, <span class="num">2</span>], [<span class="str">'X=1'</span>, <span class="str">'X=2'</span>, <span class="str">'X=3'</span>])
+plt.<span class="fn">title</span>(<span class="str">'Joint PMF Heatmap'</span>)
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="num">3</span>):
+    <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(<span class="num">3</span>):
+        plt.<span class="fn">text</span>(j, i, <span class="str">f'{joint_pmf[i,j]:.2f}'</span>,
+                 ha<span class="op">=</span><span class="str">'center'</span>, va<span class="op">=</span><span class="str">'center'</span>, fontsize<span class="op">=</span><span class="num">11</span>)
+plt.<span class="fn">tight_layout</span>()
+plt.<span class="fn">savefig</span>(<span class="str">'joint_pmf.png'</span>, dpi<span class="op">=</span><span class="num">150</span>)
+plt.<span class="fn">show</span>()</pre>
+            </div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-output"></div><span>Expected Output</span></div>
+            <div class="prac-block-body">Joint PMF table, marginal distributions, and heatmap visualization.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-result"></div><span>Result</span></div>
+            <div class="prac-block-body">Joint PMF implemented, marginals computed, and heatmap visualized.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 2C ── -->
+      <div class="practical" id="p2c">
+        <div class="practical-header">
+          <div class="prac-num">02-2C</div>
+          <div class="prac-title-block">
+            <h2>Central Limit Theorem &amp; Probability Distribution Plot</h2>
+            <div class="prac-tags">
+              <span class="prac-tag prac-tag-unit">Unit 02</span>
+              <span class="prac-tag prac-tag-co">CO2</span>
+              <span class="prac-tag prac-tag-rbt">L3 – Apply</span>
+            </div>
+          </div>
+        </div>
+        <div class="prac-body">
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-aim"></div><span>Aim</span></div>
+            <div class="prac-block-body">To demonstrate the Central Limit Theorem (CLT) by plotting the distribution of sample means.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-theory"></div><span>Theory / Concept</span></div>
+            <div class="prac-block-body">CLT states that the distribution of sample means approaches a Normal distribution as sample size <em>n</em> increases, regardless of the population's original distribution.<br><br>Standard Error: <strong>SE = σ/√n</strong></div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-code"></div><span>Python Code</span></div>
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy
+              </button>
+              <pre><span class="kw">import</span> numpy <span class="kw">as</span> <span class="op">np</span>
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> <span class="op">plt</span>
+
+np.random.<span class="fn">seed</span>(<span class="num">42</span>)
+population <span class="op">=</span> np.random.<span class="fn">exponential</span>(scale<span class="op">=</span><span class="num">2</span>, size<span class="op">=</span><span class="num">100000</span>)  <span class="cm"># skewed</span>
+
+sample_sizes <span class="op">=</span> [<span class="num">1</span>, <span class="num">5</span>, <span class="num">30</span>, <span class="num">100</span>]
+num_samples  <span class="op">=</span> <span class="num">1000</span>
+
+fig, axes <span class="op">=</span> plt.<span class="fn">subplots</span>(<span class="num">1</span>, <span class="num">4</span>, figsize<span class="op">=</span>(<span class="num">16</span>, <span class="num">4</span>))
+<span class="kw">for</span> ax, n <span class="kw">in</span> <span class="fn">zip</span>(axes, sample_sizes):
+    means <span class="op">=</span> [np.<span class="fn">mean</span>(np.random.<span class="fn">choice</span>(population, n))
+             <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(num_samples)]
+    ax.<span class="fn">hist</span>(means, bins<span class="op">=</span><span class="num">30</span>, color<span class="op">=</span><span class="str">'steelblue'</span>,
+           edgecolor<span class="op">=</span><span class="str">'navy'</span>, density<span class="op">=</span><span class="cls">True</span>)
+    ax.<span class="fn">set_title</span>(<span class="str">f'n = {n}'</span>, fontsize<span class="op">=</span><span class="num">13</span>)
+    ax.<span class="fn">set_xlabel</span>(<span class="str">'Sample Mean'</span>)
+    ax.<span class="fn">set_ylabel</span>(<span class="str">'Density'</span>)
+
+fig.<span class="fn">suptitle</span>(<span class="str">'Central Limit Theorem — Sample Mean Distributions'</span>,
+             fontsize<span class="op">=</span><span class="num">14</span>, y<span class="op">=</span><span class="num">1.02</span>)
+plt.<span class="fn">tight_layout</span>()
+plt.<span class="fn">savefig</span>(<span class="str">'clt.png'</span>, dpi<span class="op">=</span><span class="num">150</span>)
+plt.<span class="fn">show</span>()
+
+<span class="fn">print</span>(<span class="str">'As n increases, the distribution of sample means becomes Normal.'</span>)</pre>
+            </div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-output"></div><span>Expected Output</span></div>
+            <div class="prac-block-body">Four subplots showing how sample mean distribution converges to Normal as <em>n</em> increases.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-result"></div><span>Result</span></div>
+            <div class="prac-block-body">CLT demonstrated visually — distribution of sample means normalises with increasing <em>n</em>.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 3A ── -->
+      <div class="practical" id="p3a">
+        <div class="practical-header">
+          <div class="prac-num">03-3A</div>
+          <div class="prac-title-block">
+            <h2>Large Sample Test for Single Mean (Z-test)</h2>
+            <div class="prac-tags">
+              <span class="prac-tag prac-tag-unit">Unit 03</span>
+              <span class="prac-tag prac-tag-co">CO2</span>
+              <span class="prac-tag prac-tag-rbt">L4 – Analyze</span>
+            </div>
+          </div>
+        </div>
+        <div class="prac-body">
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-aim"></div><span>Aim</span></div>
+            <div class="prac-block-body">To perform a large sample Z-test for a single population mean and interpret the result.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-theory"></div><span>Theory / Concept</span></div>
+            <div class="prac-block-body">
+              Z-test is used when n ≥ 30.<br><br>
+              Test statistic: <strong>Z = (x̄ − μ₀) / (σ/√n)</strong><br><br>
+              Compare |Z_calc| with Z_critical — 1.96 for α=0.05, 2.576 for α=0.01.<br>
+              If |Z_calc| &gt; Z_critical → reject H₀.
+            </div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-code"></div><span>Python Code</span></div>
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy
+              </button>
+              <pre><span class="kw">import</span> numpy <span class="kw">as</span> <span class="op">np</span>
+<span class="kw">from</span> scipy <span class="kw">import</span> stats
+
+<span class="cm"># Given data (Problem: diesel engine thermal efficiency)</span>
+mu_0  <span class="op">=</span> <span class="num">32.5</span>   <span class="cm"># claimed mean (H0)</span>
+x_bar <span class="op">=</span> <span class="num">31.4</span>   <span class="cm"># sample mean</span>
+sigma <span class="op">=</span>  <span class="num">1.6</span>   <span class="cm"># population std dev</span>
+n     <span class="op">=</span>    <span class="num">40</span>   <span class="cm"># sample size</span>
+alpha <span class="op">=</span>  <span class="num">0.01</span>  <span class="cm"># level of significance</span>
+
+<span class="cm"># Z test statistic</span>
+Z_calc <span class="op">=</span> (x_bar <span class="op">-</span> mu_0) <span class="op">/</span> (sigma <span class="op">/</span> np.<span class="fn">sqrt</span>(n))
+<span class="fn">print</span>(<span class="str">f'Z_calculated = {Z_calc:.4f}'</span>)
+
+<span class="cm"># Critical value (two-tailed)</span>
+Z_crit <span class="op">=</span> stats.norm.<span class="fn">ppf</span>(<span class="num">1</span> <span class="op">-</span> alpha <span class="op">/</span> <span class="num">2</span>)
+<span class="fn">print</span>(<span class="str">f'Z_critical (two-tailed, alpha={alpha}) = {Z_crit:.4f}'</span>)
+
+<span class="cm"># Decision</span>
+<span class="kw">if</span> <span class="fn">abs</span>(Z_calc) <span class="op">&gt;</span> Z_crit:
+    <span class="fn">print</span>(<span class="str">'Decision: REJECT H0 — Claim is NOT acceptable'</span>)
+<span class="kw">else</span>:
+    <span class="fn">print</span>(<span class="str">'Decision: FAIL TO REJECT H0 — Claim is acceptable'</span>)
+
+<span class="cm"># p-value</span>
+p_value <span class="op">=</span> <span class="num">2</span> <span class="op">*</span> (<span class="num">1</span> <span class="op">-</span> stats.norm.<span class="fn">cdf</span>(<span class="fn">abs</span>(Z_calc)))
+<span class="fn">print</span>(<span class="str">f'p-value = {p_value:.6f}'</span>)</pre>
+            </div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-output"></div><span>Expected Output</span></div>
+            <div class="prac-block-body">Z_calculated, Z_critical, decision statement, and p-value.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-result"></div><span>Result</span></div>
+            <div class="prac-block-body">Z-test performed; H₀ rejected at 0.01 LOS — the company's claim is not supported.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 4B ── -->
+      <div class="practical" id="p4b">
+        <div class="practical-header">
+          <div class="prac-num">04-4B</div>
+          <div class="prac-title-block">
+            <h2>n-Step Transition Probability</h2>
+            <div class="prac-tags">
+              <span class="prac-tag prac-tag-unit">Unit 04</span>
+              <span class="prac-tag prac-tag-co">CO3</span>
+              <span class="prac-tag prac-tag-rbt">L3 – Apply</span>
+            </div>
+          </div>
+        </div>
+        <div class="prac-body">
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-aim"></div><span>Aim</span></div>
+            <div class="prac-block-body">To calculate n-step transition probabilities for a Markov chain using matrix exponentiation.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-theory"></div><span>Theory / Concept</span></div>
+            <div class="prac-block-body">
+              For a Markov chain with transition matrix <strong>P</strong>, the n-step transition probability <strong>P⁽ⁿ⁾ = Pⁿ</strong> (matrix power).<br><br>
+              P⁽ⁿ⁾<sub>ij</sub> gives the probability of moving from state <em>i</em> to state <em>j</em> in exactly <em>n</em> steps.<br>
+              As n→∞, Pⁿ → steady-state matrix.
+            </div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-code"></div><span>Python Code</span></div>
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy
+              </button>
+              <pre><span class="kw">import</span> numpy <span class="kw">as</span> <span class="op">np</span>
+
+<span class="cm"># Transition matrix</span>
+P <span class="op">=</span> np.<span class="fn">array</span>([[<span class="num">0.5</span>,  <span class="num">0.5</span>],
+              [<span class="num">0.75</span>, <span class="num">0.25</span>]])
+
+<span class="cm"># Initial distribution</span>
+P0 <span class="op">=</span> np.<span class="fn">array</span>([<span class="num">0.25</span>, <span class="num">0.75</span>])
+
+<span class="kw">def</span> <span class="fn">matrix_power</span>(<span class="pm">M</span>, <span class="pm">n</span>):
+    result <span class="op">=</span> np.<span class="fn">eye</span>(<span class="fn">len</span>(M))
+    <span class="kw">for</span> _ <span class="kw">in</span> <span class="fn">range</span>(n):
+        result <span class="op">=</span> result <span class="op">@</span> M
+    <span class="kw">return</span> result
+
+<span class="cm"># 2-step transition matrix</span>
+P2 <span class="op">=</span> <span class="fn">matrix_power</span>(P, <span class="num">2</span>)
+<span class="fn">print</span>(<span class="str">'P^2 (2-step transition matrix):'</span>)
+<span class="fn">print</span>(np.<span class="fn">round</span>(P2, <span class="num">4</span>))
+
+<span class="fn">print</span>(<span class="str">f'\nP^2_21 (state 2->1 in 2 steps): {P2[1,0]:.4f}'</span>)
+<span class="fn">print</span>(<span class="str">f'P^2_12 (state 1->2 in 2 steps): {P2[0,1]:.4f}'</span>)
+
+<span class="cm"># Distribution after n steps</span>
+<span class="kw">for</span> n <span class="kw">in</span> [<span class="num">1</span>, <span class="num">2</span>, <span class="num">5</span>, <span class="num">20</span>]:
+    dist <span class="op">=</span> P0 <span class="op">@</span> <span class="fn">matrix_power</span>(P, n)
+    <span class="fn">print</span>(<span class="str">f'Distribution after {n:2d} steps: {np.round(dist, 4)}'</span>)
+
+<span class="cm"># Steady state</span>
+P_inf <span class="op">=</span> <span class="fn">matrix_power</span>(P, <span class="num">200</span>)
+<span class="fn">print</span>(<span class="str">'\nSteady-state (P^200):'</span>)
+<span class="fn">print</span>(np.<span class="fn">round</span>(P_inf, <span class="num">4</span>))</pre>
+            </div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-output"></div><span>Expected Output</span></div>
+            <div class="prac-block-body">2-step matrix, specific transition probabilities, state distributions, and steady-state.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-result"></div><span>Result</span></div>
+            <div class="prac-block-body">n-step transition probabilities computed; steady-state distribution identified.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 5C ── -->
+      <div class="practical" id="p5c">
+        <div class="practical-header">
+          <div class="prac-num">05-5C</div>
+          <div class="prac-title-block">
+            <h2>Simple Linear Regression on a Real Dataset</h2>
+            <div class="prac-tags">
+              <span class="prac-tag prac-tag-unit">Unit 05</span>
+              <span class="prac-tag prac-tag-co">CO4</span>
+              <span class="prac-tag prac-tag-rbt">L3 – Apply</span>
+            </div>
+          </div>
+        </div>
+        <div class="prac-body">
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-aim"></div><span>Aim</span></div>
+            <div class="prac-block-body">To perform Simple Linear Regression on a real dataset and visualize the regression line.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-theory"></div><span>Theory / Concept</span></div>
+            <div class="prac-block-body">
+              SLR models the relationship <strong>Y = β₀ + β₁X + ε</strong>.<br><br>
+              Normal equations: β₁ = Σ(xᵢ−x̄)(yᵢ−ȳ) / Σ(xᵢ−x̄)², β₀ = ȳ − β₁x̄<br><br>
+              <strong>R²</strong> measures goodness of fit (closer to 1 = better fit).
+            </div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-code"></div><span>Python Code</span></div>
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy
+              </button>
+              <pre><span class="kw">import</span> numpy <span class="kw">as</span> <span class="op">np</span>
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> <span class="op">plt</span>
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> <span class="cls">LinearRegression</span>
+<span class="kw">from</span> sklearn.datasets <span class="kw">import</span> load_diabetes
+<span class="kw">from</span> sklearn.metrics <span class="kw">import</span> r2_score, mean_squared_error
+
+<span class="cm"># Load real dataset (diabetes — single feature: BMI)</span>
+data <span class="op">=</span> <span class="fn">load_diabetes</span>()
+X <span class="op">=</span> data.data[:, <span class="num">2</span>].<span class="fn">reshape</span>(<span class="op">-</span><span class="num">1</span>, <span class="num">1</span>)  <span class="cm"># BMI feature</span>
+Y <span class="op">=</span> data.target
+
+<span class="cm"># Fit model</span>
+model <span class="op">=</span> <span class="cls">LinearRegression</span>()
+model.<span class="fn">fit</span>(X, Y)
+Y_pred <span class="op">=</span> model.<span class="fn">predict</span>(X)
+
+<span class="fn">print</span>(<span class="str">f'Intercept (b0)  : {model.intercept_:.4f}'</span>)
+<span class="fn">print</span>(<span class="str">f'Coefficient (b1): {model.coef_[0]:.4f}'</span>)
+<span class="fn">print</span>(<span class="str">f'R-squared       : {r2_score(Y, Y_pred):.4f}'</span>)
+<span class="fn">print</span>(<span class="str">f'RMSE            : {np.sqrt(mean_squared_error(Y, Y_pred)):.4f}'</span>)
+
+<span class="cm"># Plot</span>
+plt.<span class="fn">figure</span>(figsize<span class="op">=</span>(<span class="num">8</span>, <span class="num">5</span>))
+plt.<span class="fn">scatter</span>(X, Y, color<span class="op">=</span><span class="str">'steelblue'</span>, alpha<span class="op">=</span><span class="num">0.5</span>, label<span class="op">=</span><span class="str">'Actual data'</span>)
+plt.<span class="fn">plot</span>(X, Y_pred, color<span class="op">=</span><span class="str">'crimson'</span>, lw<span class="op">=</span><span class="num">2</span>, label<span class="op">=</span><span class="str">'Regression line'</span>)
+plt.<span class="fn">xlabel</span>(<span class="str">'BMI (normalised)'</span>)
+plt.<span class="fn">ylabel</span>(<span class="str">'Disease Progression'</span>)
+plt.<span class="fn">title</span>(<span class="str">'Simple Linear Regression — Diabetes Dataset'</span>)
+plt.<span class="fn">legend</span>()
+plt.<span class="fn">tight_layout</span>()
+plt.<span class="fn">savefig</span>(<span class="str">'slr.png'</span>, dpi<span class="op">=</span><span class="num">150</span>)
+plt.<span class="fn">show</span>()</pre>
+            </div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-output"></div><span>Expected Output</span></div>
+            <div class="prac-block-body">Regression coefficients, R², RMSE, and scatter plot with regression line.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-result"></div><span>Result</span></div>
+            <div class="prac-block-body">Simple Linear Regression applied successfully; regression equation and fit metrics reported.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 6A ── -->
+      <div class="practical" id="p6a">
+        <div class="practical-header">
+          <div class="prac-num">06-6A</div>
+          <div class="prac-title-block">
+            <h2>Lagrange's Interpolation Method</h2>
+            <div class="prac-tags">
+              <span class="prac-tag prac-tag-unit">Unit 06</span>
+              <span class="prac-tag prac-tag-co">CO4</span>
+              <span class="prac-tag prac-tag-rbt">L3 – Apply</span>
+            </div>
+          </div>
+        </div>
+        <div class="prac-body">
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-aim"></div><span>Aim</span></div>
+            <div class="prac-block-body">To implement Lagrange's Interpolation formula and estimate the value of a function at a given point.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-theory"></div><span>Theory / Concept</span></div>
+            <div class="prac-block-body">
+              Lagrange's formula: <strong>P(x) = Σ yᵢ × ∏<sub>j≠i</sub> (x−xⱼ)/(xᵢ−xⱼ)</strong><br><br>
+              It passes exactly through all given data points and requires no equal-spacing assumption.
+            </div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-code"></div><span>Python Code</span></div>
+            <div class="code-wrap">
+              <button class="copy-btn" onclick="copyCode(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Copy
+              </button>
+              <pre><span class="kw">import</span> numpy <span class="kw">as</span> <span class="op">np</span>
+<span class="kw">import</span> matplotlib.pyplot <span class="kw">as</span> <span class="op">plt</span>
+
+<span class="kw">def</span> <span class="fn">lagrange_interpolate</span>(<span class="pm">x_points</span>, <span class="pm">y_points</span>, <span class="pm">x</span>):
+    <span class="str">"""Return interpolated value at x using Lagrange's formula."""</span>
+    n <span class="op">=</span> <span class="fn">len</span>(x_points)
+    result <span class="op">=</span> <span class="num">0.0</span>
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(n):
+        term <span class="op">=</span> y_points[i]
+        <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(n):
+            <span class="kw">if</span> j <span class="op">!=</span> i:
+                term <span class="op">*=</span> (x <span class="op">-</span> x_points[j]) <span class="op">/</span> (x_points[i] <span class="op">-</span> x_points[j])
+        result <span class="op">+=</span> term
+    <span class="kw">return</span> result
+
+<span class="cm"># Given data points</span>
+x_pts <span class="op">=</span> np.<span class="fn">array</span>([<span class="num">1</span>,  <span class="num">3</span>,  <span class="num">7</span>, <span class="num">13</span>], dtype<span class="op">=</span><span class="cls">float</span>)
+y_pts <span class="op">=</span> np.<span class="fn">array</span>([<span class="num">2</span>,  <span class="num">5</span>, <span class="num">12</span>, <span class="num">20</span>], dtype<span class="op">=</span><span class="cls">float</span>)
+
+<span class="cm"># Estimate at x = 4</span>
+x_est <span class="op">=</span> <span class="num">4</span>
+y_est <span class="op">=</span> <span class="fn">lagrange_interpolate</span>(x_pts, y_pts, x_est)
+<span class="fn">print</span>(<span class="str">f'Lagrange interpolated value at x={x_est}: y = {y_est:.4f}'</span>)
+
+<span class="cm"># Plot the polynomial</span>
+x_range <span class="op">=</span> np.<span class="fn">linspace</span>(<span class="num">1</span>, <span class="num">13</span>, <span class="num">300</span>)
+y_range <span class="op">=</span> [<span class="fn">lagrange_interpolate</span>(x_pts, y_pts, xi) <span class="kw">for</span> xi <span class="kw">in</span> x_range]
+
+plt.<span class="fn">figure</span>(figsize<span class="op">=</span>(<span class="num">8</span>, <span class="num">5</span>))
+plt.<span class="fn">plot</span>(x_range, y_range, <span class="str">'b-'</span>, lw<span class="op">=</span><span class="num">2</span>, label<span class="op">=</span><span class="str">'Lagrange Polynomial'</span>)
+plt.<span class="fn">scatter</span>(x_pts, y_pts, color<span class="op">=</span><span class="str">'red'</span>, s<span class="op">=</span><span class="num">80</span>, zorder<span class="op">=</span><span class="num">5</span>, label<span class="op">=</span><span class="str">'Data Points'</span>)
+plt.<span class="fn">scatter</span>(x_est, y_est, color<span class="op">=</span><span class="str">'green'</span>, s<span class="op">=</span><span class="num">120</span>, marker<span class="op">=</span><span class="str">'*'</span>, zorder<span class="op">=</span><span class="num">6</span>,
+           label<span class="op">=</span><span class="str">f'Interpolated ({x_est}, {y_est:.2f})'</span>)
+plt.<span class="fn">xlabel</span>(<span class="str">'x'</span>); plt.<span class="fn">ylabel</span>(<span class="str">'y'</span>)
+plt.<span class="fn">title</span>(<span class="str">"Lagrange's Interpolation"</span>)
+plt.<span class="fn">legend</span>()
+plt.<span class="fn">grid</span>(<span class="cls">True</span>)
+plt.<span class="fn">tight_layout</span>()
+plt.<span class="fn">savefig</span>(<span class="str">'lagrange.png'</span>, dpi<span class="op">=</span><span class="num">150</span>)
+plt.<span class="fn">show</span>()</pre>
+            </div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-output"></div><span>Expected Output</span></div>
+            <div class="prac-block-body">Interpolated value at x=4 and plot of the Lagrange polynomial through data points.</div>
+          </div>
+          <div class="prac-block">
+            <div class="prac-block-header"><div class="dot dot-result"></div><span>Result</span></div>
+            <div class="prac-block-body">Lagrange Interpolation implemented; interpolated value obtained and polynomial plotted.</div>
+          </div>
+        </div>
+      </div>
+
+    </section><!-- /practicals-section -->
+
+    <footer class="footer">
+      <span>Applied Mathematics Laboratory · 2301254L · MIT-AOE · SYCE-SE · Sem II · 2025–26</span>
+      <span>Python 3.x · NumPy · SciPy · Matplotlib · scikit-learn</span>
+    </footer>
+  </main>
+</div>
+
+<script>
+  /* ── COPY CODE ── */
+  function copyCode(btn) {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    const text = pre.innerText || pre.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.classList.add('copied');
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!`;
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy`;
+      }, 2000);
+    });
+  }
+
+  /* ── ACTIVE NAV ── */
+  const navItems = document.querySelectorAll('.nav-item[href^="#"]');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navItems.forEach(a => a.classList.remove('active'));
+        const a = document.querySelector(`.nav-item[href="#${e.target.id}"]`);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+
+  document.querySelectorAll('[id]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
